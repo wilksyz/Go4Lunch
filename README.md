@@ -1,0 +1,1 @@
+﻿# Go4LunchGo4Lunch is a restaurant search application between colleagues
