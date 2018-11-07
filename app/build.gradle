@@ -38,6 +38,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
 
     // Multidex
     implementation 'com.android.support:multidex:1.0.3'
@@ -47,4 +48,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:16.0.5'
     implementation 'com.firebaseui:firebase-ui-auth:4.2.1'
     implementation 'com.firebaseui:firebase-ui-firestore:4.2.1'
+
+    // ButterKnife
+    implementation 'com.jakewharton:butterknife:9.0.0-rc1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc1'
 }
