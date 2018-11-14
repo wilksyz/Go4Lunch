@@ -7,6 +7,8 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -21,6 +23,9 @@ import android.widget.TextView;
 
 import com.antoine.go4lunch.Data.UserHelper;
 import com.antoine.go4lunch.R;
+import com.antoine.go4lunch.controlers.fragment.MapFragment;
+import com.antoine.go4lunch.controlers.fragment.RestaurantViewFragment;
+import com.antoine.go4lunch.controlers.fragment.WorkmatesFragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
@@ -33,7 +38,11 @@ public class MainActivity extends BaseActivity {
 
     @BindView(R.id.myCoordinatorLayout) CoordinatorLayout coordinatorLayout;
     private DrawerLayout mDrawerLayout;
-
+    private final FragmentManager mFragmentManager = getSupportFragmentManager();
+    private final Fragment mMapFragment = new MapFragment();
+    private final Fragment mRestaurantView = new RestaurantViewFragment();
+    private final Fragment mWorkmatesView = new WorkmatesFragment();
+    private Fragment active = mMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +52,7 @@ public class MainActivity extends BaseActivity {
         this.checkIfUserConnected();
         this.configureToolBar();
         this.configureNavigationDrawer();
+        this.configureShowFragment();
 
     }
 
@@ -129,18 +139,27 @@ public class MainActivity extends BaseActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
-
+                        mFragmentManager.beginTransaction().hide(active).show(mMapFragment).commit();
+                        active = mMapFragment;
                         return true;
                     case R.id.navigation_dashboard:
-
+                        mFragmentManager.beginTransaction().hide(active).show(mRestaurantView).commit();
+                        active = mRestaurantView;
                         return true;
                     case R.id.navigation_notifications:
-
+                        mFragmentManager.beginTransaction().hide(active).show(mWorkmatesView).commit();
+                        active = mWorkmatesView;
                         return true;
                 }
                 return false;
             }
         });
+    }
+
+    private void configureShowFragment(){
+        mFragmentManager.beginTransaction().add(R.id.fragment_layout, mWorkmatesView, "3").hide(mWorkmatesView).commit();
+        mFragmentManager.beginTransaction().add(R.id.fragment_layout, mRestaurantView, "2").hide(mRestaurantView).commit();
+        mFragmentManager.beginTransaction().add(R.id.fragment_layout,mMapFragment, "1").commit();
     }
 
     private void createUserInFirestore(){
@@ -191,5 +210,7 @@ public class MainActivity extends BaseActivity {
                 .signOut(this)
                 .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
     }
+
+
 
 }
