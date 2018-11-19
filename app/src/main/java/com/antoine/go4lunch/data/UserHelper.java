@@ -1,4 +1,4 @@
-package com.antoine.go4lunch.Data;
+package com.antoine.go4lunch.data;
 
 import com.antoine.go4lunch.models.User;
 import com.google.android.gms.tasks.Task;

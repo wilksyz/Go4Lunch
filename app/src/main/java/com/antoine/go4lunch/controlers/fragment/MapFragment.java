@@ -30,7 +30,7 @@ import butterknife.BindView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends Fragment implements OnMapReadyCallback {
+public class MapFragment extends BaseFragment implements OnMapReadyCallback {
 
     @BindView(R.id.mapView)
     MapView mMapView;
@@ -40,6 +40,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int DEFAULT_ZOOM = 15;
     private Location mLastKnownLocation;
+    private String mLocation;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
     private CameraPosition mCameraPosition;
@@ -65,6 +66,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMapView.getMapAsync(this);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
+
+
         return view;
     }
 
@@ -74,6 +77,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         this.getLocationPermission();
         this.updateLocationUI();
         this.getDeviceLocation();
+        //location.put("location","location="+mLocation);
+        //location.put("key","key=AIzaSyC4kk4WOR06ppmHhFAq4lddEqdoCGOziSo");
+        //executeHttpRequestWithRetrofit();
+
     }
 
     private void getDeviceLocation() {
@@ -89,6 +96,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                            mLocation = (String.valueOf(mLastKnownLocation.getLatitude())+","+String.valueOf(mLastKnownLocation.getLongitude()));
+                            String zmLocation = "47.8567521,0.2058559";
+                            Log.e("TAG", "test variable   "+zmLocation);
+                            executeHttpRequestWithRetrofit(zmLocation);
                         } else {
                             Log.d("TAG", "Current location is null. Using defaults.");
                             Log.e("TAG", "Exception: %s", task.getException());

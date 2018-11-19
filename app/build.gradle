@@ -1,6 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
+//Loading api keys file
+def apiPropertiesFile = rootProject.file("api.properties")
+def apiProperties = new Properties()
+apiProperties.load(new FileInputStream(apiPropertiesFile))
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -13,12 +18,15 @@ android {
         resConfigs "en", "fr"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
-        resValue "string", "google_maps_key", (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "AIzaSyDrUT0-8GZJnMky1S5MKYNemcn_ZMdVFm8")
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            resValue("string", "google_maps_api", apiProperties['google_maps_key'])
+        }
+        debug{
+            resValue("string", "google_maps_api", apiProperties['google_maps_key'])
         }
     }
 }
@@ -62,4 +70,15 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation "com.google.android.gms:play-services-location:16.0.0"
 
+    // Gson
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+
+    // rxJava
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.7'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 }

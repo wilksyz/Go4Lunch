@@ -12,7 +12,7 @@ import com.antoine.go4lunch.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RestaurantViewFragment extends Fragment {
+public class RestaurantViewFragment extends BaseFragment {
 
 
     public RestaurantViewFragment() {

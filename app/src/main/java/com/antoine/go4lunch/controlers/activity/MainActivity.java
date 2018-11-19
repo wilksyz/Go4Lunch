@@ -21,7 +21,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.antoine.go4lunch.Data.UserHelper;
+import com.antoine.go4lunch.data.UserHelper;
 import com.antoine.go4lunch.R;
 import com.antoine.go4lunch.controlers.fragment.MapFragment;
 import com.antoine.go4lunch.controlers.fragment.RestaurantViewFragment;
