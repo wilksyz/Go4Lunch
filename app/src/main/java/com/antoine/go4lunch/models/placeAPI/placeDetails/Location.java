@@ -1,10 +1,9 @@
-package com.antoine.go4lunch.models.placeAPI.placeSearch;
+package com.antoine.go4lunch.models.placeAPI.placeDetails;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Location {
-
     @SerializedName("lat")
     @Expose
     private Double lat;
@@ -27,5 +26,4 @@ public class Location {
     public void setLng(Double lng) {
         this.lng = lng;
     }
-
 }

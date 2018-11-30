@@ -1,11 +1,9 @@
-package com.antoine.go4lunch.models.placeAPI.placeSearch;
-
+package com.antoine.go4lunch.models.placeAPI.placeDetails;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Geometry {
-
     @SerializedName("location")
     @Expose
     private Location location;

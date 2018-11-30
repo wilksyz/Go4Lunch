@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Results {
+public class Result {
 
     @SerializedName("formatted_address")
     @Expose
@@ -13,6 +13,9 @@ public class Results {
     @SerializedName("formatted_phone_number")
     @Expose
     private String formattedPhoneNumber;
+    @SerializedName("geometry")
+    @Expose
+    private Geometry geometry;
     @SerializedName("name")
     @Expose
     private String name;
@@ -31,6 +34,9 @@ public class Results {
     @SerializedName("types")
     @Expose
     private List<String> types = null;
+    @SerializedName("website")
+    @Expose
+    private String website;
 
     public String getFormattedAddress() {
         return formattedAddress;
@@ -46,6 +52,14 @@ public class Results {
 
     public void setFormattedPhoneNumber(String formattedPhoneNumber) {
         this.formattedPhoneNumber = formattedPhoneNumber;
+    }
+
+    public Geometry getGeometry() {
+        return geometry;
+    }
+
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
     }
 
     public String getName() {
@@ -94,6 +108,14 @@ public class Results {
 
     public void setTypes(List<String> types) {
         this.types = types;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
 }

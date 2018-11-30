@@ -139,16 +139,13 @@ public class MainActivity extends BaseActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
-                        mFragmentManager.beginTransaction().hide(active).show(mMapFragment).commit();
-                        active = mMapFragment;
+                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mMapFragment).addToBackStack(null).commit();
                         return true;
                     case R.id.navigation_dashboard:
-                        mFragmentManager.beginTransaction().hide(active).show(mRestaurantView).commit();
-                        active = mRestaurantView;
+                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mRestaurantView).addToBackStack(null).commit();
                         return true;
                     case R.id.navigation_notifications:
-                        mFragmentManager.beginTransaction().hide(active).show(mWorkmatesView).commit();
-                        active = mWorkmatesView;
+                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mWorkmatesView).addToBackStack(null).commit();
                         return true;
                 }
                 return false;
@@ -157,8 +154,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void configureShowFragment(){
-        mFragmentManager.beginTransaction().add(R.id.fragment_layout, mWorkmatesView, "3").hide(mWorkmatesView).commit();
-        mFragmentManager.beginTransaction().add(R.id.fragment_layout, mRestaurantView, "2").hide(mRestaurantView).commit();
         mFragmentManager.beginTransaction().add(R.id.fragment_layout,mMapFragment, "1").commit();
     }
 

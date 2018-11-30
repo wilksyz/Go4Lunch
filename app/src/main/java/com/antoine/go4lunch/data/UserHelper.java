@@ -32,13 +32,12 @@ public class UserHelper {
     // --- UPDATE ---
 
     public static Task<Void> updateUsername(String username, String uid) {
-        return UserHelper.getUsersCollection().document(uid).update("username", username);
+        return UserHelper.getUsersCollection().document(uid).update("mUsername", username);
     }
 
-    public static Task<Void> updateIsMentor(String uid, Boolean isMentor) {
-        return UserHelper.getUsersCollection().document(uid).update("isMentor", isMentor);
+    public static Task<Void> updateSelectedRestaurant(String selectedRestaurantId, String uid) {
+        return UserHelper.getUsersCollection().document(uid).update("mSelectedRestauraznt", selectedRestaurantId);
     }
-
     // --- DELETE ---
 
     public static Task<Void> deleteUser(String uid) {

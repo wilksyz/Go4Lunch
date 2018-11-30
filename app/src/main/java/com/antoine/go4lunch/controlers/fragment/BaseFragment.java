@@ -1,39 +1,30 @@
 package com.antoine.go4lunch.controlers.fragment;
-
+import android.annotation.SuppressLint;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.widget.Toast;
 
-import com.antoine.go4lunch.data.PlaceApiStream;
-import com.antoine.go4lunch.models.placeAPI.placeSearch.ListOfRestaurant;
+import com.antoine.go4lunch.R;
+import com.google.android.gms.tasks.OnFailureListener;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableObserver;
-
-public class BaseFragment extends Fragment {
-
-    Disposable disposable;
-    Map<String,String> location = new HashMap<>();
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 
-    protected void executeHttpRequestWithRetrofit(String Plocation){
-        disposable = PlaceApiStream.streamFetchListRestaurants(Plocation).subscribeWith(new DisposableObserver<ListOfRestaurant>() {
+public abstract class BaseFragment extends Fragment {
+
+    protected OnFailureListener onFailureListener(){
+        return new OnFailureListener() {
+            @SuppressLint("RestrictedApi")
             @Override
-            public void onNext(ListOfRestaurant listOfRestaurant) {
-                Log.e("TAG","On successful: "+listOfRestaurant.getStatus());
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
             }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e("TAG","On Error stream"+Log.getStackTraceString(e));
-            }
-
-            @Override
-            public void onComplete() {
-                Log.e("TAG","On Complete !!");
-            }
-        });
+        };
     }
+
+
+
+
+
+
 }

@@ -25,9 +25,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             resValue("string", "google_maps_api", apiProperties['google_maps_key'])
         }
-        debug{
+        debug {
             resValue("string", "google_maps_api", apiProperties['google_maps_key'])
         }
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
     }
 }
 

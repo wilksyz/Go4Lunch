@@ -5,14 +5,14 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class DetailsRestaurants {
+public class DetailsRestaurant {
 
     @SerializedName("html_attributions")
     @Expose
     private List<Object> htmlAttributions = null;
     @SerializedName("result")
     @Expose
-    private Results result;
+    private Result result;
     @SerializedName("status")
     @Expose
     private String status;
@@ -25,11 +25,11 @@ public class DetailsRestaurants {
         this.htmlAttributions = htmlAttributions;
     }
 
-    public Results getResult() {
+    public Result getResult() {
         return result;
     }
 
-    public void setResult(Results result) {
+    public void setResult(Result result) {
         this.result = result;
     }
 
