@@ -18,7 +18,7 @@ public interface PlaceApiService {
     @GET("nearbysearch/json?rankby=distance&type=restaurant")
     Observable<ListOfRestaurant> getLocation(@QueryMap Map<String, String> location);
 
-    @GET("details/json?fields=name,rating,formatted_phone_number,formatted_address,geometry,type,photo,place_id,opening_hours,geometry")
+    @GET("details/json?fields=name,rating,formatted_phone_number,formatted_address,geometry,type,photo,place_id,opening_hours,geometry,website")
     Observable<DetailsRestaurant> getPlaceID(@QueryMap Map<String, String> placeid);
 
 

@@ -23,6 +23,8 @@
     <string name="like">LIKE</string>
     <string name="call">CALL</string>
     <string name="it_is_the_image_restaurant">It is the image restaurant</string>
+    <string name="SIGN_IN">Sign in</string>
+    <string name="THIS_APP_NEEDS_YOUR_LOCATION">This app needs access to your location to know the restaurants around you</string>
 
 
 </resources>

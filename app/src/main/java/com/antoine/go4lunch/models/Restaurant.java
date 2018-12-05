@@ -3,7 +3,7 @@ package com.antoine.go4lunch.models;
 public class Restaurant {
 
     private String mPlaceId;
-    private int mRating;
+    private long mRating;
 
     public Restaurant() {
     }
@@ -18,13 +18,13 @@ public class Restaurant {
         return mPlaceId;
     }
 
-    public int getRating() {
+    public long getRating() {
         return mRating;
     }
 
     // --- SETTERS ---
 
-    public void setRating(int rating) {
+    public void setRating(long rating) {
         this.mRating = mRating + rating;
     }
 

@@ -1,58 +1,104 @@
 package com.antoine.go4lunch.controlers.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.antoine.go4lunch.R;
-import com.antoine.go4lunch.controlers.fragment.BaseFragment;
 import com.antoine.go4lunch.data.PlaceApiStream;
 import com.antoine.go4lunch.data.RestaurantHelper;
-import com.antoine.go4lunch.models.Restaurant;
 import com.antoine.go4lunch.models.placeAPI.placeDetails.DetailsRestaurant;
 import com.antoine.go4lunch.models.placeAPI.placeDetails.Result;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.GlideBuilder;
+import com.bumptech.glide.Registry;
+import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.Blob;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
 
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
-
-public class InfoPageRestaurantActivity extends AppCompatActivity {
+public class InfoPageRestaurantActivity extends AppCompatActivity{
 
     private String mPlaceId;
+    private long mRating;
+    private Result mDetailsRestaurant;
     Map<String,String> queryLocation = new HashMap<>();
     CompositeDisposable disposables = new CompositeDisposable();
+    @BindView(R.id.name_of_restaurant_textView) TextView mNameOfRestaurantTextView;
+    @BindView(R.id.restaurant_imageView) ImageView mImageRestaurant;
+    @BindView(R.id.adress_textView) TextView MadressTextView;
+    @BindView(R.id.ratingBar) RatingBar mRatingBar;
+    @BindView(R.id.webButton) Button mWebButton;
+    @BindView(R.id.likeButton) Button mLikeButton;
+    @BindView(R.id.call_button) Button mCallButton;
+    @BindView(R.id.floatingActionButton) FloatingActionButton mRestaurantSelect;
+    @BindView(R.id.workmaters_recycler_view) RecyclerView mWorkmatersRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_page);
-
+        ButterKnife.bind(this);
         mPlaceId = getIntent().getStringExtra("placeId");
         queryLocation.put("key", getString(R.string.google_maps_api));
         queryLocation.put("placeid", mPlaceId);
         executeHttpRequestListOfRestaurant();
         executeRequestFirestore(mPlaceId);
-        Log.e("TAG", "PlaceId: "+mPlaceId);
-        //RestaurantHelper.updateRating(mPlaceId,2).addOnFailureListener(this.onFailureListener());
+        mRatingBar.setNumStars(0);
+        mCallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDetailsRestaurant.getFormattedPhoneNumber() != null){
+                    String tel = "tel:"+mDetailsRestaurant.getFormattedPhoneNumber();
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse(tel));
+                    startActivity(intent);
+                }
+            }
+        });
+        mWebButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDetailsRestaurant.getWebsite() != null){
+                    String url = mDetailsRestaurant.getWebsite();
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+                    browserIntent.setData(Uri.parse(url));
+                    startActivity(browserIntent);
+                }
+            }
+        });
+        mLikeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRating++;
+                RestaurantHelper.updateRating(mPlaceId,mRating);
+            }
+        });
+
     }
 
     private void executeHttpRequestListOfRestaurant(){
@@ -64,7 +110,7 @@ public class InfoPageRestaurantActivity extends AppCompatActivity {
         return new DisposableObserver<DetailsRestaurant>() {
             @Override
             public void onNext(DetailsRestaurant listOfRestaurant) {
-
+                updatingInterfaceUser(listOfRestaurant.getResult());
             }
             @Override
             public void onError(Throwable e) {
@@ -78,6 +124,27 @@ public class InfoPageRestaurantActivity extends AppCompatActivity {
         };
     }
 
+    public void updatingInterfaceUser(Result detailsRestaurant){
+        mDetailsRestaurant = detailsRestaurant;
+        if (mDetailsRestaurant != null){
+            mNameOfRestaurantTextView.setText(mDetailsRestaurant.getName());
+            MadressTextView.setText(mDetailsRestaurant.getFormattedAddress());
+            if (mDetailsRestaurant.getPhotos() != null){
+                String url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=2976&photoreference="+mDetailsRestaurant.getPhotos().get(0).getPhotoReference()+"&key="+getString(R.string.google_maps_api);
+                Glide.with(this)
+                        .load(url)
+                        .into(mImageRestaurant);
+            }
+            if (mDetailsRestaurant.getFormattedPhoneNumber() == null){
+                mCallButton.setClickable(false);
+            }
+            if (mDetailsRestaurant.getWebsite() == null){
+                mWebButton.setClickable(false);
+            }
+
+        }
+    }
+
     public void executeRequestFirestore(String placeId){
         RestaurantHelper.getRestaurant(placeId)
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -86,7 +153,18 @@ public class InfoPageRestaurantActivity extends AppCompatActivity {
                         if (documentSnapshotTask.isSuccessful()) {
                             DocumentSnapshot document = documentSnapshotTask.getResult();
                             if (document.exists()) {
-                                long rating = document.getLong("rating");
+                                mRating = document.getLong("rating");
+                                Log.e("TAG","rating"+mRating);
+                                if (mRating < 5 && mRating != 0){
+                                    mRatingBar.setNumStars(1);
+                                    mRatingBar.setRating(1);
+                                }else if(mRating < 10 && mRating != 0){
+                                    mRatingBar.setNumStars(2);
+                                    mRatingBar.setRating(2);
+                                }else if(mRating > 10){
+                                    mRatingBar.setNumStars(3);
+                                    mRatingBar.setRating(3);
+                                }
                             } else {
                                 Log.d("TAG", "No such document");
                             }
@@ -95,11 +173,6 @@ public class InfoPageRestaurantActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-
-
-
-
     }
 
     protected OnFailureListener onFailureListener(){
@@ -111,5 +184,4 @@ public class InfoPageRestaurantActivity extends AppCompatActivity {
             }
         };
     }
-
 }

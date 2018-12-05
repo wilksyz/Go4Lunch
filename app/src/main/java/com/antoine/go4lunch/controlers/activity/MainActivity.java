@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -14,14 +12,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.antoine.go4lunch.data.UserHelper;
 import com.antoine.go4lunch.R;
 import com.antoine.go4lunch.controlers.fragment.MapFragment;
 import com.antoine.go4lunch.controlers.fragment.RestaurantViewFragment;
@@ -29,27 +25,21 @@ import com.antoine.go4lunch.controlers.fragment.WorkmatesFragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.IdpResponse;
-
-import butterknife.BindView;
 
 public class MainActivity extends BaseActivity {
 
-    @BindView(R.id.myCoordinatorLayout) CoordinatorLayout coordinatorLayout;
+
     private DrawerLayout mDrawerLayout;
     private final FragmentManager mFragmentManager = getSupportFragmentManager();
     private final Fragment mMapFragment = new MapFragment();
     private final Fragment mRestaurantView = new RestaurantViewFragment();
     private final Fragment mWorkmatesView = new WorkmatesFragment();
-    private Fragment active = mMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_navigation);
         this.configureBottomNavigationView();
-        this.checkIfUserConnected();
         this.configureToolBar();
         this.configureNavigationDrawer();
         this.configureShowFragment();
@@ -107,6 +97,9 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    private Boolean isCurrentUserLogged(){
+        return (this.getCurrentUser() != null); }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
@@ -157,55 +150,9 @@ public class MainActivity extends BaseActivity {
         mFragmentManager.beginTransaction().add(R.id.fragment_layout,mMapFragment, "1").commit();
     }
 
-    private void createUserInFirestore(){
-
-        if (this.getCurrentUser() != null){
-
-            String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
-            String username = this.getCurrentUser().getDisplayName();
-            String uid = this.getCurrentUser().getUid();
-
-            UserHelper.createUser(uid, username, urlPicture).addOnFailureListener(this.onFailureListener());
-        }
-    }
-
-    private void showSnackBar( String message){
-        Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-
-            // Successfully signed in
-            if (resultCode == RESULT_OK) {
-                this.createUserInFirestore();
-            } else {
-                // Sign in failed
-                if (response == null) {
-                    // User pressed back button
-                    showSnackBar(getString(R.string.sign_in_cancelled));
-                    return;
-                }
-
-                if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    showSnackBar(getString(R.string.no_internet_connection));
-                    return;
-                }
-
-                showSnackBar(getString(R.string.unknown_error));
-                Log.e("TAG", "Sign-in error: ", response.getError());
-            }
-        }
-    }
-
     private void signOutUserFromFirebase(){
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
     }
-
-
-
 }

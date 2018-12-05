@@ -22,7 +22,8 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:menu="@menu/drawer_view"
-
-        android:theme="@style/Go4LunchThemeDrawer"/>
+        android:background="@color/background_material_light"
+        android:theme="@style/Go4LunchThemeDrawer"
+        />
 
 </android.support.v4.widget.DrawerLayout>

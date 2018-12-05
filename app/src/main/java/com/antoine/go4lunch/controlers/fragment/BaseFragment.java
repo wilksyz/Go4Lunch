@@ -12,15 +12,7 @@ import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public abstract class BaseFragment extends Fragment {
 
-    protected OnFailureListener onFailureListener(){
-        return new OnFailureListener() {
-            @SuppressLint("RestrictedApi")
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
-            }
-        };
-    }
+
 
 
 

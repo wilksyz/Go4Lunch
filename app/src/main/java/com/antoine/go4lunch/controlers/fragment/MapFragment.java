@@ -1,18 +1,18 @@
 package com.antoine.go4lunch.controlers.fragment;
 
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.antoine.go4lunch.R;
 import com.antoine.go4lunch.controlers.activity.InfoPageRestaurantActivity;
@@ -31,11 +31,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,16 +44,20 @@ import java.util.Map;
 import butterknife.BindView;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
+
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapFragment extends BaseFragment implements GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
+public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
 
     @BindView(R.id.mapView)
     MapView mMapView;
-    private boolean mLocationPermissionGranted;
-    private final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1918;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 191;
+    private static final String LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     protected static final int DEFAULT_ZOOM = 15;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
@@ -66,6 +70,7 @@ public class MapFragment extends BaseFragment implements GoogleMap.OnMarkerClick
     protected GoogleMap mGoogleMap;
     protected List<DetailsRestaurant> mListOfRestaurant;
     protected LatLng mCurentLocation;
+    private Bundle msavedInstanceState;
 
     public MapFragment() {
         // Required empty public constructor
@@ -81,16 +86,20 @@ public class MapFragment extends BaseFragment implements GoogleMap.OnMarkerClick
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
-
+        msavedInstanceState = savedInstanceState;
         mMapView = view.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(this);
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        createMap(savedInstanceState);
         queryLocation.put("key", getString(R.string.google_maps_api));
-
+        checkPermissionAndLoadTheMap();
 
 
         return view;
+    }
+
+    private void createMap(Bundle savedInstanceState){
+        mMapView.onCreate(savedInstanceState);
+        mMapView.getMapAsync(this);
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
     }
 
     @Override
@@ -100,33 +109,30 @@ public class MapFragment extends BaseFragment implements GoogleMap.OnMarkerClick
 
     }
 
-    private void getLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this.getContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLocationPermissionGranted = true;
-            getLastLocation();
-        } else {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
+    private boolean hasLocationPermissions() {
+        return EasyPermissions.hasPermissions(getContext(), LOCATION);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
-                    getLastLocation();
-                }
-            }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @AfterPermissionGranted(PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+    private void checkPermissionAndLoadTheMap() {
+        if (hasLocationPermissions()) {
+            // Have permission, do the thing!
+            createMap(msavedInstanceState);
+            getLastLocation();
+        } else {
+            // Ask for one permission
+            EasyPermissions.requestPermissions(
+                    this,
+                    getString(R.string.THIS_APP_NEEDS_YOUR_LOCATION),
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION);
         }
-        this.updateLocationUI();
     }
 
     @SuppressWarnings("MissingPermission")
@@ -156,19 +162,19 @@ public class MapFragment extends BaseFragment implements GoogleMap.OnMarkerClick
                         mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
     }
 
+
     private void updateLocationUI() {
         if (mGoogleMap == null) {
             return;
         }
         try {
-            if (mLocationPermissionGranted) {
+            if (hasLocationPermissions()) {
                 mGoogleMap.setMyLocationEnabled(true);
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
             } else {
                 mGoogleMap.setMyLocationEnabled(false);
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mLastKnownLocation = null;
-                getLocationPermission();
             }
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
@@ -257,7 +263,6 @@ public class MapFragment extends BaseFragment implements GoogleMap.OnMarkerClick
     @Override
     public void onStart() {
         super.onStart();
-        this.getLocationPermission();
     }
 
     @Override
@@ -296,5 +301,15 @@ public class MapFragment extends BaseFragment implements GoogleMap.OnMarkerClick
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+    private OnFailureListener onFailureListener(){
+        return new OnFailureListener() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
+            }
+        };
     }
 }

@@ -28,6 +28,7 @@ public class PlaceApiStream {
         PlaceApiService placeApiService = PlaceApiService.retrofit.create(PlaceApiService.class);
         return placeApiService.getPlaceID(placeId)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .timeout(30, TimeUnit.SECONDS);
     }
 

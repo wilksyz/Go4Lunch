@@ -6,7 +6,7 @@ public class User {
 
     private String uid;
     private String mUsername;
-    private String mSelectedRestauraznt;
+    private String mMyRestauraznt;
     @Nullable
     private String mUrlPicture;
 
@@ -16,7 +16,7 @@ public class User {
         this.uid = uid;
         this.mUsername = username;
         this.mUrlPicture = urlPicture;
-        this.mSelectedRestauraznt = null;
+        //this.mMyRestauraznt = null;
     }
 
     // --- GETTERS ---
@@ -26,8 +26,8 @@ public class User {
 
     public String getUrlPicture() { return mUrlPicture; }
 
-    public String getmSelectedRestauraznt() {
-        return mSelectedRestauraznt;
+    public String getMyRestauraznt() {
+        return mMyRestauraznt;
     }
 
     // --- SETTERS ---
@@ -37,7 +37,7 @@ public class User {
 
     public void setUrlPicture(String urlPicture) { this.mUrlPicture = urlPicture; }
 
-    public void setmSelectedRestauraznt(String mSelectedRestauraznt) {
-        this.mSelectedRestauraznt = mSelectedRestauraznt;
+    public void setMyRestauraznt(String mSelectedRestauraznt) {
+        this.mMyRestauraznt = mSelectedRestauraznt;
     }
 }

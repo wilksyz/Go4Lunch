@@ -23,7 +23,7 @@ public class RestaurantHelper {
         return RestaurantHelper.getRestaurantsCollection().document(placeId).get();
     }
 
-    public static Task<Void> updateRating(String placeId, int rating){
+    public static Task<Void> updateRating(String placeId, long rating){
         return RestaurantHelper.getRestaurantsCollection().document(placeId).update("rating", rating);
     }
 
