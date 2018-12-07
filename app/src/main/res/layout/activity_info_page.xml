@@ -49,13 +49,13 @@
         android:id="@+id/name_of_restaurant_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textSize="14sp"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:layout_constraintTop_toTopOf="@+id/view"
         tools:text="@tools:sample/cities" />
 
     <RatingBar
@@ -63,8 +63,10 @@
         style="@android:style/Widget.Holo.RatingBar.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/name_of_restaurant_textView"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/name_of_restaurant_textView"
         app:layout_constraintTop_toTopOf="@+id/name_of_restaurant_textView" />
 
@@ -72,11 +74,15 @@
         android:id="@+id/adress_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textSize="14sp"
         android:visibility="visible"
-        app:layout_constraintStart_toStartOf="@+id/name_of_restaurant_textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name_of_restaurant_textView"
         tools:text="@tools:sample/cities" />
 
@@ -149,7 +155,7 @@
         android:layout_marginEnd="8dp"
         android:clickable="true"
         android:focusable="true"
-        app:backgroundTint="@android:color/background_light"
+        app:backgroundTint="@color/colorPrimary"
         app:elevation="10dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@+id/view"

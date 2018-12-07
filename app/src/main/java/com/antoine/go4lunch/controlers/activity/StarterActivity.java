@@ -42,9 +42,6 @@ public class StarterActivity extends BaseActivity {
                 if (auth.getCurrentUser() == null) {
                     // already signed in
                     startSignInActivity();
-                }else{
-                    Intent intent = new Intent(StarterActivity.this, MainActivity.class);
-                    startActivity(intent);
                 }
             }
         });
@@ -56,12 +53,20 @@ public class StarterActivity extends BaseActivity {
         checkIfUserConnected();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
     private void checkIfUserConnected() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             // already signed in
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            finish();
         }
     }
 
@@ -116,7 +121,7 @@ public class StarterActivity extends BaseActivity {
             String username = this.getCurrentUser().getDisplayName();
             String uid = this.getCurrentUser().getUid();
 
-            UserHelper.createUser(uid, username, urlPicture).addOnFailureListener(this.onFailureListener());
+            UserHelper.createUser(uid, username, urlPicture, null).addOnFailureListener(this.onFailureListener());
         }
     }
 

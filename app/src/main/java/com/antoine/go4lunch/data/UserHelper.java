@@ -1,10 +1,13 @@
 package com.antoine.go4lunch.data;
 
-import com.antoine.go4lunch.models.User;
+import android.support.annotation.Nullable;
+
+import com.antoine.go4lunch.models.firestore.User;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 public class UserHelper {
 
@@ -18,8 +21,8 @@ public class UserHelper {
 
     // --- CREATE ---
 
-    public static Task<Void> createUser(String uid, String username, String urlPicture) {
-        User userToCreate = new User(uid, username, urlPicture);
+    public static Task<Void> createUser(String uid, String username, String urlPicture,@Nullable String myRestaurant) {
+        User userToCreate = new User(uid, username, urlPicture, myRestaurant);
         return UserHelper.getUsersCollection().document(uid).set(userToCreate);
     }
 
@@ -36,7 +39,7 @@ public class UserHelper {
     }
 
     public static Task<Void> updateSelectedRestaurant(String selectedRestaurantId, String uid) {
-        return UserHelper.getUsersCollection().document(uid).update("mSelectedRestauraznt", selectedRestaurantId);
+        return UserHelper.getUsersCollection().document(uid).update("myRestaurant", selectedRestaurantId);
     }
     // --- DELETE ---
 
@@ -44,4 +47,7 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(uid).delete();
     }
 
+    public static Query getAllUser(){
+        return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
+    }
 }

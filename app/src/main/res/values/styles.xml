@@ -40,4 +40,11 @@
         <item name="android:textColorSecondary">@android:color/black</item>
     </style>
 
+    <style name="Go4LunchStatusBarTranslucent" parent="Go4LunchTheme" >
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="AlertDialogCustom" parent="Go4LunchTheme">
+        <item name="android:colorForeground">@android:color/black</item>
+    </style>
 </resources>

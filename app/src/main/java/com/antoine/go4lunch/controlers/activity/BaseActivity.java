@@ -1,6 +1,5 @@
 package com.antoine.go4lunch.controlers.activity;
 
-
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,10 +21,10 @@ public abstract class BaseActivity extends AppCompatActivity {
             public void onSuccess(Void aVoid) {
                 switch (origin){
                     case SIGN_OUT_TASK:
-                        finish();
+                        recreate();
                         break;
                     case DELETE_USER_TASK:
-                        finish();
+                        recreate();
                         break;
                     default:
                         break;

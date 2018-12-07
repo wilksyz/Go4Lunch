@@ -1,5 +1,6 @@
 package com.antoine.go4lunch.controlers.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,8 +11,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,13 +26,21 @@ import com.antoine.go4lunch.R;
 import com.antoine.go4lunch.controlers.fragment.MapFragment;
 import com.antoine.go4lunch.controlers.fragment.RestaurantViewFragment;
 import com.antoine.go4lunch.controlers.fragment.WorkmatesFragment;
+import com.antoine.go4lunch.data.UserHelper;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity {
 
-
+    @BindView(R.id.navigation) BottomNavigationView mBottomNavigation;
     private DrawerLayout mDrawerLayout;
     private final FragmentManager mFragmentManager = getSupportFragmentManager();
     private final Fragment mMapFragment = new MapFragment();
@@ -39,11 +51,11 @@ public class MainActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_navigation);
+        ButterKnife.bind(this);
         this.configureBottomNavigationView();
         this.configureToolBar();
         this.configureNavigationDrawer();
         this.configureShowFragment();
-
     }
 
     private void configureNavigationDrawer(){
@@ -67,11 +79,44 @@ public class MainActivity extends BaseActivity {
                                 signOutUserFromFirebase();
                                 return true;
                             case R.id.settings:
-                                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                                startActivity(intent);
+                                Intent intentSettings = new Intent(MainActivity.this, SettingsActivity.class);
+                                startActivity(intentSettings);
                                 return true;
                             case R.id.your_lunch:
-
+                                if (getCurrentUser() != null){
+                                    UserHelper.getUser(getCurrentUser().getUid())
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> documentSnapshotTask) {
+                                                    if (documentSnapshotTask.isSuccessful()) {
+                                                        DocumentSnapshot document = documentSnapshotTask.getResult();
+                                                        if (document.exists()) {
+                                                            String myRestaurant = document.getString("myRestaurant");
+                                                            if (myRestaurant != null){
+                                                                Intent intentYourLunch = new Intent(MainActivity.this, InfoPageRestaurantActivity.class);
+                                                                intentYourLunch.putExtra("placeId", myRestaurant);
+                                                                startActivity(intentYourLunch);
+                                                            }else{
+                                                                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.AlertDialogCustom));
+                                                                builder.setTitle(getResources().getString(R.string.YOUR_LUNCH))
+                                                                        .setMessage(getResources().getString(R.string.YOU_HAVE_NOT_CHOSEN_A_RESTAURANT_FOR_LUNCH_YET))
+                                                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                                            @Override
+                                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                            }
+                                                                        })
+                                                                        .create()
+                                                                        .show();
+                                                            }
+                                                        } else {
+                                                            Log.d("TAG", "No such document");
+                                                        }
+                                                    } else {
+                                                        Log.d("TAG", "get failed with ", documentSnapshotTask.getException());
+                                                    }
+                                                }
+                                            });
+                                }
                                 return true;
                         }
                         return true;
@@ -125,20 +170,21 @@ public class MainActivity extends BaseActivity {
     }
 
     private void configureBottomNavigationView(){
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-
+        mBottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
-                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mMapFragment).addToBackStack(null).commit();
+                        Log.e("TAG","Passage home");
+                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mMapFragment,"1").addToBackStack(null).commit();
                         return true;
                     case R.id.navigation_dashboard:
-                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mRestaurantView).addToBackStack(null).commit();
+                        Log.e("TAG","Passage list view");
+                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mRestaurantView,"2").addToBackStack(null).commit();
                         return true;
                     case R.id.navigation_notifications:
-                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mWorkmatesView).addToBackStack(null).commit();
+                        Log.e("TAG","Passage workmates");
+                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mWorkmatesView,"3").addToBackStack(null).commit();
                         return true;
                 }
                 return false;
@@ -148,11 +194,43 @@ public class MainActivity extends BaseActivity {
 
     private void configureShowFragment(){
         mFragmentManager.beginTransaction().add(R.id.fragment_layout,mMapFragment, "1").commit();
+        mFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_layout);
+                switch (f.getTag()){
+                    case "1":
+
+                        break;
+                    case "2":
+
+                        break;
+                    case "3":
+
+                        break;
+                }
+            }
+        });
     }
 
     private void signOutUserFromFirebase(){
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkIfUserConnected();
+    }
+
+    private void checkIfUserConnected() {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) {
+            // already signed in
+            Intent intent = new Intent(this, StarterActivity.class);
+            startActivity(intent);
+        }
     }
 }

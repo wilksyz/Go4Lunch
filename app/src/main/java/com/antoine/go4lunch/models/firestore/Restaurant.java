@@ -1,4 +1,4 @@
-package com.antoine.go4lunch.models;
+package com.antoine.go4lunch.models.firestore;
 
 public class Restaurant {
 

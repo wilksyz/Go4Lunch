@@ -54,8 +54,7 @@ import static com.firebase.ui.auth.AuthUI.getApplicationContext;
  */
 public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
 
-    @BindView(R.id.mapView)
-    MapView mMapView;
+    @BindView(R.id.mapView) MapView mMapView;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 191;
     private static final String LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     protected static final int DEFAULT_ZOOM = 15;

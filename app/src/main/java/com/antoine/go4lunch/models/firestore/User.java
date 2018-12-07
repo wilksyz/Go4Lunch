@@ -1,4 +1,4 @@
-package com.antoine.go4lunch.models;
+package com.antoine.go4lunch.models.firestore;
 
 import android.support.annotation.Nullable;
 
@@ -6,17 +6,18 @@ public class User {
 
     private String uid;
     private String mUsername;
-    private String mMyRestauraznt;
+    @Nullable
+    private String mMyRestaurant;
     @Nullable
     private String mUrlPicture;
 
     public User() { }
 
-    public User(String uid, String username, String urlPicture) {
+    public User(String uid, String username, String urlPicture, String myRestaurant) {
         this.uid = uid;
         this.mUsername = username;
         this.mUrlPicture = urlPicture;
-        //this.mMyRestauraznt = null;
+        this.mMyRestaurant = myRestaurant;
     }
 
     // --- GETTERS ---
@@ -26,8 +27,8 @@ public class User {
 
     public String getUrlPicture() { return mUrlPicture; }
 
-    public String getMyRestauraznt() {
-        return mMyRestauraznt;
+    public String getMyRestaurant() {
+        return mMyRestaurant;
     }
 
     // --- SETTERS ---
@@ -37,7 +38,7 @@ public class User {
 
     public void setUrlPicture(String urlPicture) { this.mUrlPicture = urlPicture; }
 
-    public void setMyRestauraznt(String mSelectedRestauraznt) {
-        this.mMyRestauraznt = mSelectedRestauraznt;
+    public void setMyRestaurant(String mSelectedRestauraznt) {
+        this.mMyRestaurant = mSelectedRestauraznt;
     }
 }

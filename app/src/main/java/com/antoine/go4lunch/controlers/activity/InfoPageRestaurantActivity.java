@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -22,15 +23,14 @@ import android.widget.Toast;
 import com.antoine.go4lunch.R;
 import com.antoine.go4lunch.data.PlaceApiStream;
 import com.antoine.go4lunch.data.RestaurantHelper;
+import com.antoine.go4lunch.data.UserHelper;
 import com.antoine.go4lunch.models.placeAPI.placeDetails.DetailsRestaurant;
 import com.antoine.go4lunch.models.placeAPI.placeDetails.Result;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.GlideBuilder;
-import com.bumptech.glide.Registry;
-import com.bumptech.glide.RequestManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.HashMap;
@@ -41,11 +41,13 @@ import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
 
-public class InfoPageRestaurantActivity extends AppCompatActivity{
+public class InfoPageRestaurantActivity extends AppCompatActivity {
 
     private String mPlaceId;
     private long mRating;
     private Result mDetailsRestaurant;
+    private String uIdUser;
+    private String mMyRestaurant;
     Map<String,String> queryLocation = new HashMap<>();
     CompositeDisposable disposables = new CompositeDisposable();
     @BindView(R.id.name_of_restaurant_textView) TextView mNameOfRestaurantTextView;
@@ -68,7 +70,6 @@ public class InfoPageRestaurantActivity extends AppCompatActivity{
         queryLocation.put("placeid", mPlaceId);
         executeHttpRequestListOfRestaurant();
         executeRequestFirestore(mPlaceId);
-        mRatingBar.setNumStars(0);
         mCallButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +78,8 @@ public class InfoPageRestaurantActivity extends AppCompatActivity{
                     Intent intent = new Intent(Intent.ACTION_DIAL);
                     intent.setData(Uri.parse(tel));
                     startActivity(intent);
+                }else{
+                    Toast.makeText(InfoPageRestaurantActivity.this,"No number phone available",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -88,6 +91,8 @@ public class InfoPageRestaurantActivity extends AppCompatActivity{
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW);
                     browserIntent.setData(Uri.parse(url));
                     startActivity(browserIntent);
+                }else{
+                    Toast.makeText(InfoPageRestaurantActivity.this,getString(R.string.NO_WEBSITE_AVAILABLE),Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -95,10 +100,27 @@ public class InfoPageRestaurantActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 mRating++;
-                RestaurantHelper.updateRating(mPlaceId,mRating);
+                RestaurantHelper.updateRating(mPlaceId,mRating).addOnFailureListener(onFailureListener());
             }
         });
-
+        mRestaurantSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMyRestaurant == null){
+                    UserHelper.updateSelectedRestaurant(mPlaceId, uIdUser).addOnFailureListener(onFailureListener());
+                    mRestaurantSelect.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorValidation)));
+                    mMyRestaurant = mPlaceId;
+                }else if (mMyRestaurant.equals(mPlaceId)){
+                    UserHelper.updateSelectedRestaurant(null, uIdUser).addOnFailureListener(onFailureListener());
+                    mRestaurantSelect.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+                    mMyRestaurant = null;
+                }else{
+                    UserHelper.updateSelectedRestaurant(mPlaceId, uIdUser).addOnFailureListener(onFailureListener());
+                    mRestaurantSelect.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorValidation)));
+                    mMyRestaurant = mPlaceId;
+                }
+            }
+        });
     }
 
     private void executeHttpRequestListOfRestaurant(){
@@ -135,13 +157,6 @@ public class InfoPageRestaurantActivity extends AppCompatActivity{
                         .load(url)
                         .into(mImageRestaurant);
             }
-            if (mDetailsRestaurant.getFormattedPhoneNumber() == null){
-                mCallButton.setClickable(false);
-            }
-            if (mDetailsRestaurant.getWebsite() == null){
-                mWebButton.setClickable(false);
-            }
-
         }
     }
 
@@ -154,7 +169,6 @@ public class InfoPageRestaurantActivity extends AppCompatActivity{
                             DocumentSnapshot document = documentSnapshotTask.getResult();
                             if (document.exists()) {
                                 mRating = document.getLong("rating");
-                                Log.e("TAG","rating"+mRating);
                                 if (mRating < 5 && mRating != 0){
                                     mRatingBar.setNumStars(1);
                                     mRatingBar.setRating(1);
@@ -164,6 +178,8 @@ public class InfoPageRestaurantActivity extends AppCompatActivity{
                                 }else if(mRating > 10){
                                     mRatingBar.setNumStars(3);
                                     mRatingBar.setRating(3);
+                                }else{
+                                    mRatingBar.setNumStars(0);
                                 }
                             } else {
                                 Log.d("TAG", "No such document");
@@ -173,9 +189,31 @@ public class InfoPageRestaurantActivity extends AppCompatActivity{
                         }
                     }
                 });
+        if (FirebaseAuth.getInstance().getCurrentUser() != null){
+            uIdUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            UserHelper.getUser(uIdUser)
+                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> documentSnapshotTask) {
+                            if (documentSnapshotTask.isSuccessful()){
+                                DocumentSnapshot document = documentSnapshotTask.getResult();
+                                if (document.exists()){
+                                    mMyRestaurant = document.getString("myRestaurant");
+                                    Log.e("TAG","restaurant: "+mMyRestaurant);
+                                    if (mMyRestaurant != null && mMyRestaurant.equals(mPlaceId)){
+                                        mRestaurantSelect.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorValidation)));
+                                    }else{
+                                        mRestaurantSelect.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+                                    }
+                                }
+                            }
+                        }
+                    });
+        }
+
     }
 
-    protected OnFailureListener onFailureListener(){
+    private OnFailureListener onFailureListener(){
         return new OnFailureListener() {
             @SuppressLint("RestrictedApi")
             @Override
