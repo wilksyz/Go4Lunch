@@ -50,4 +50,9 @@ public class UserHelper {
     public static Query getAllUser(){
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
     }
+
+    public static Query getAllUserSelectRestaurant(String placeId){
+        return UserHelper.getUsersCollection()
+                .whereEqualTo("myRestaurant", placeId);
+    }
 }

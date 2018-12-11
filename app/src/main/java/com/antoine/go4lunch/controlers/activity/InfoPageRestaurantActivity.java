@@ -32,9 +32,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.MetadataChanges;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -161,31 +166,32 @@ public class InfoPageRestaurantActivity extends AppCompatActivity {
     }
 
     public void executeRequestFirestore(String placeId){
-        RestaurantHelper.getRestaurant(placeId)
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        RestaurantHelper.getRestaurantsCollection().document(placeId)
+                .addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> documentSnapshotTask) {
-                        if (documentSnapshotTask.isSuccessful()) {
-                            DocumentSnapshot document = documentSnapshotTask.getResult();
-                            if (document.exists()) {
-                                mRating = document.getLong("rating");
-                                if (mRating < 5 && mRating != 0){
-                                    mRatingBar.setNumStars(1);
-                                    mRatingBar.setRating(1);
-                                }else if(mRating < 10 && mRating != 0){
-                                    mRatingBar.setNumStars(2);
-                                    mRatingBar.setRating(2);
-                                }else if(mRating > 10){
-                                    mRatingBar.setNumStars(3);
-                                    mRatingBar.setRating(3);
-                                }else{
-                                    mRatingBar.setNumStars(0);
-                                }
-                            } else {
-                                Log.d("TAG", "No such document");
+                    public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w("TAG", "Listen failed.", e);
+                            return;
+                        }
+
+                        if (documentSnapshot != null && documentSnapshot.exists()) {
+                            mRating = documentSnapshot.getLong("rating");
+                            if (mRating < 5 && mRating != 0){
+                                mRatingBar.setNumStars(1);
+                                mRatingBar.setRating(1);
+                            }else if(mRating < 10 && mRating != 0){
+                                mRatingBar.setNumStars(2);
+                                mRatingBar.setRating(2);
+                            }else if(mRating > 10){
+                                mRatingBar.setNumStars(3);
+                                mRatingBar.setRating(3);
+                            }else{
+                                mRatingBar.setVisibility(View.INVISIBLE);
                             }
                         } else {
-                            Log.d("TAG", "get failed with ", documentSnapshotTask.getException());
+                            Log.d("TAG", "Current data: null");
                         }
                     }
                 });

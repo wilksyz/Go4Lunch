@@ -3,6 +3,7 @@
     <string name="title_map">Map View</string>
     <string name="title_list_view">List View</string>
     <string name="title_workmates">Workmates</string>
+    <string name="android_label">I\'m Hungry!</string>
 
     //Facebook
     <string name="facebook_application_id" translatable="false">263200171048763</string>
@@ -31,6 +32,9 @@
     <string name="IS_EATING_TO">is eating to (</string>
     <string name="YOUR_LUNCH">Your lunch</string>
     <string name="YOU_HAVE_NOT_CHOSEN_A_RESTAURANT_FOR_LUNCH_YET">You have not chosen a restaurant for lunch yet</string>
+    <string name="OPEN_UNTIL">Open until</string>
+    <string name="CLOSED">Closed</string>
+    <string name="OPEN">Open</string>
 
 
 </resources>

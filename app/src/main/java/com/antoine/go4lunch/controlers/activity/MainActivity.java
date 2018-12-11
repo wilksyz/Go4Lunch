@@ -52,6 +52,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_navigation);
         ButterKnife.bind(this);
+        this.setTitle(R.string.android_label);
         this.configureBottomNavigationView();
         this.configureToolBar();
         this.configureNavigationDrawer();

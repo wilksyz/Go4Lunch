@@ -42,21 +42,21 @@ public class WorkmatesViewHolder extends RecyclerView.ViewHolder{
                     .apply(RequestOptions.circleCropTransform())
                     .into(mUserProfileImage);
         }
+        mProfileTextView.setEnabled(false);
         mProfileTextView.setText(configureTextView(user));
     }
 
     private String configureTextView(User user){
         mUsername = user.getUsername();
         String idRestaurant;
-
         if (user.getMyRestaurant() != null){
             idRestaurant = user.getMyRestaurant();
             queryLocation.put("placeid", idRestaurant);
             executeHttpRequestListOfRestaurant();
+            mProfileTextView.setEnabled(true);
             return mUsername;
         }else{
             String text = mUsername+" "+ itemView.getContext().getString(R.string.HASNT_DECIDED_YET);
-            mProfileTextView.setEnabled(false);
             return text;
         }
     }

@@ -1,5 +1,6 @@
 package com.antoine.go4lunch.data;
 
+import com.antoine.go4lunch.models.matrixAPI.DistanceMatrixRestaurant;
 import com.antoine.go4lunch.models.placeAPI.placeDetails.DetailsRestaurant;
 
 import java.util.HashMap;
@@ -27,6 +28,14 @@ public class PlaceApiStream {
     public static Observable<DetailsRestaurant> streamFetchDetailsPlace(Map<String,String> placeId){
         PlaceApiService placeApiService = PlaceApiService.retrofit.create(PlaceApiService.class);
         return placeApiService.getPlaceID(placeId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .timeout(30, TimeUnit.SECONDS);
+    }
+
+    public static Observable<DistanceMatrixRestaurant> streamFetchDistanceMatrix(Map<String, String> distance){
+        PlaceApiService placeApiService = PlaceApiService.retrofit.create(PlaceApiService.class);
+        return placeApiService.getDistance(distance)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .timeout(30, TimeUnit.SECONDS);

@@ -4,5 +4,6 @@
     <color name="colorPrimaryDark">#d32f2f</color>
     <color name="colorAccent">#ff6d00</color>
     <color name="background_material_light">#ff7d47</color>
-    <color name="colorValidation">#FF2FD334</color>
+    <color name="colorValidation">#2fd334</color>
+    <color name="colorBlack">#70000000</color>
 </resources>
