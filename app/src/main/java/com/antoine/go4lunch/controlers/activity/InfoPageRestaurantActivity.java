@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -24,9 +25,12 @@ import com.antoine.go4lunch.R;
 import com.antoine.go4lunch.data.PlaceApiStream;
 import com.antoine.go4lunch.data.RestaurantHelper;
 import com.antoine.go4lunch.data.UserHelper;
+import com.antoine.go4lunch.models.firestore.User;
 import com.antoine.go4lunch.models.placeAPI.placeDetails.DetailsRestaurant;
 import com.antoine.go4lunch.models.placeAPI.placeDetails.Result;
+import com.antoine.go4lunch.views.WorkmatesAdapter;
 import com.bumptech.glide.Glide;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -35,6 +39,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.MetadataChanges;
+import com.google.firebase.firestore.Query;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,13 +51,14 @@ import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
 
-public class InfoPageRestaurantActivity extends AppCompatActivity {
+public class InfoPageRestaurantActivity extends AppCompatActivity implements WorkmatesAdapter.Listener{
 
     private String mPlaceId;
     private long mRating;
     private Result mDetailsRestaurant;
     private String uIdUser;
     private String mMyRestaurant;
+    public WorkmatesAdapter mWorkmatesAdapter;
     Map<String,String> queryLocation = new HashMap<>();
     CompositeDisposable disposables = new CompositeDisposable();
     @BindView(R.id.name_of_restaurant_textView) TextView mNameOfRestaurantTextView;
@@ -75,6 +81,7 @@ public class InfoPageRestaurantActivity extends AppCompatActivity {
         queryLocation.put("placeid", mPlaceId);
         executeHttpRequestListOfRestaurant();
         executeRequestFirestore(mPlaceId);
+        configureRecyclerView();
         mCallButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,7 +212,6 @@ public class InfoPageRestaurantActivity extends AppCompatActivity {
                                 DocumentSnapshot document = documentSnapshotTask.getResult();
                                 if (document.exists()){
                                     mMyRestaurant = document.getString("myRestaurant");
-                                    Log.e("TAG","restaurant: "+mMyRestaurant);
                                     if (mMyRestaurant != null && mMyRestaurant.equals(mPlaceId)){
                                         mRestaurantSelect.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorValidation)));
                                     }else{
@@ -227,5 +233,23 @@ public class InfoPageRestaurantActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
             }
         };
+    }
+
+    private void configureRecyclerView(){
+        this.mWorkmatesAdapter = new WorkmatesAdapter(generateOptionsForAdapter(UserHelper.getAllUserSelectRestaurant(mPlaceId)),Glide.with(this),this, 2);
+        mWorkmatersRecyclerView.setAdapter(this.mWorkmatesAdapter);
+        mWorkmatersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private FirestoreRecyclerOptions<User> generateOptionsForAdapter(Query query){
+        return new FirestoreRecyclerOptions.Builder<User>()
+                .setQuery(query, User.class)
+                .setLifecycleOwner(this)
+                .build();
+    }
+
+    @Override
+    public void onDataChanged() {
+
     }
 }

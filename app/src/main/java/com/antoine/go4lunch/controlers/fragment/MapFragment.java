@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -80,13 +81,12 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-
+        ButterKnife.bind(this, view);
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
         msavedInstanceState = savedInstanceState;
-        mMapView = view.findViewById(R.id.mapView);
         createMap(savedInstanceState);
         queryLocation.put("key", getString(R.string.google_maps_api));
         checkPermissionAndLoadTheMap();
@@ -105,7 +105,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         this.updateLocationUI();
-
+        //mGoogleMap.setPadding(0, 1700, 25, 0);
     }
 
     private boolean hasLocationPermissions() {

@@ -19,16 +19,18 @@ public class WorkmatesAdapter extends FirestoreRecyclerAdapter<User, WorkmatesVi
 
     private final RequestManager mGlide;
     private Listener callback;
+    private int mNumActivity;
 
-    public WorkmatesAdapter(@NonNull FirestoreRecyclerOptions<User> options, RequestManager glide, Listener callback) {
+    public WorkmatesAdapter(@NonNull FirestoreRecyclerOptions<User> options, RequestManager glide, Listener callback, int numActivity) {
         super(options);
         this.mGlide = glide;
         this.callback = callback;
+        this.mNumActivity = numActivity;
     }
 
     @Override
     public void onBindViewHolder(@NonNull WorkmatesViewHolder holder, int position, @NonNull User model) {
-        holder.updateWithUserList(model, this.mGlide);
+        holder.updateWithUserList(model, this.mGlide, this.mNumActivity);
     }
 
     @NonNull

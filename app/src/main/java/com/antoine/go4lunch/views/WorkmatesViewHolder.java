@@ -36,14 +36,20 @@ public class WorkmatesViewHolder extends RecyclerView.ViewHolder{
         queryLocation.put("key", itemView.getContext().getString(R.string.google_maps_api));
     }
 
-    protected void updateWithUserList(User user, RequestManager glide){
+    protected void updateWithUserList(User user, RequestManager glide, int numActivity){
         if (user.getUrlPicture() != null){
             glide.load(user.getUrlPicture())
                     .apply(RequestOptions.circleCropTransform())
                     .into(mUserProfileImage);
         }
-        mProfileTextView.setEnabled(false);
-        mProfileTextView.setText(configureTextView(user));
+        if (numActivity == 1){
+            mProfileTextView.setEnabled(false);
+            mProfileTextView.setText(configureTextView(user));
+        }else if (numActivity == 2){
+            String text = user.getUsername()+" "+itemView.getContext().getString(R.string.IS_JOINING);
+            mProfileTextView.setText(text);
+        }
+
     }
 
     private String configureTextView(User user){

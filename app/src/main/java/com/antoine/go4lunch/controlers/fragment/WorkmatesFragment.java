@@ -26,6 +26,7 @@ public class WorkmatesFragment extends Fragment implements WorkmatesAdapter.List
 
     @BindView(R.id.workmates_recyclerview_fragment) RecyclerView mWorkmatesRecyclerView;
     public WorkmatesAdapter mWorkmatesAdapter;
+
     public WorkmatesFragment() {
         // Required empty public constructor
     }
@@ -41,7 +42,7 @@ public class WorkmatesFragment extends Fragment implements WorkmatesAdapter.List
     }
 
     private void configureRecyclerView(){
-        this.mWorkmatesAdapter = new WorkmatesAdapter(generateOptionsForAdapter(UserHelper.getAllUser()),Glide.with(this),this);
+        this.mWorkmatesAdapter = new WorkmatesAdapter(generateOptionsForAdapter(UserHelper.getAllUser()),Glide.with(this),this, 1);
         mWorkmatesRecyclerView.setAdapter(this.mWorkmatesAdapter);
         mWorkmatesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }

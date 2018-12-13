@@ -115,7 +115,6 @@ public class RestaurantsViewHolder extends RecyclerView.ViewHolder {
             public void onNext(DistanceMatrixRestaurant distanceMatrixRestaurant) {
                 mDistanceIntoRestaurant.setText(distanceMatrixRestaurant.getRows().get(0).getElements().get(0).getDistance().getText());
             }
-
             @Override
             public void onError(Throwable e) {
                 Log.e("TAG","On Error",e);

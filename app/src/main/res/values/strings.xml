@@ -35,6 +35,9 @@
     <string name="OPEN_UNTIL">Open until</string>
     <string name="CLOSED">Closed</string>
     <string name="OPEN">Open</string>
-
+    <string name="IS_JOINING">is joining!</string>
+    <string name="notification_title" translatable="false">Go4Lunch</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="notifications" translatable="false">Notifications</string>
 
 </resources>

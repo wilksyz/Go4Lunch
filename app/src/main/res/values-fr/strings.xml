@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Go4Lunch</string>
+    <string name="title_map">Carte</string>
+    <string name="title_list_view">Liste</string>
+    <string name="title_workmates">Collègues</string>
+    <string name="android_label">J\'ai faim</string>
+    <string name="error_unknown_error">Erreur inconnue</string>
+    <string name="unknown_error">Erreur inconnue</string>
+    <string name="no_internet_connection">Pas de connexion internet</string>
+    <string name="sign_in_cancelled">Identification annulé</string>
+    <string name="your_lunch">VOTRE RESTAURANT</string>
+    <string name="settings">PARAMETRES</string>
+    <string name="logout">DECONNEXION</string>
+    <string name="info_no_email_found">Pas d\'email trouvé</string>
+    <string name="info_no_username_found">Pas de nom d\'utilisateur trouvé</string>
+    <string name="search_toolbar">Rechercher</string>
+    <string name="title_activity_settings">Paramètres</string>
+    <string name="website">Site internet</string>
+    <string name="like">J\'aime</string>
+    <string name="call">Appeler</string>
+    <string name="it_is_the_image_restaurant">Image de présentation du restaurant</string>
+    <string name="SIGN_IN">S\'identifier</string>
+    <string name="THIS_APP_NEEDS_YOUR_LOCATION">Cette application a besoin de votre localisation pour connaitre les restaurants aux alentours</string>
+    <string name="NO_WEBSITE_AVAILABLE">Aucun site internet disponible</string>
+    <string name="USER_IMAGE_PROFILE">Image de profile de l\'utilisateur</string>
+    <string name="HASNT_DECIDED_YET">n\'a pas encore choisi</string>
+    <string name="YOUR_LUNCH">Votre déjeuner</string>
+    <string name="YOU_HAVE_NOT_CHOSEN_A_RESTAURANT_FOR_LUNCH_YET">Vous n\'avez pas encore choisi de restaurant pour le déjeuner</string>
+    <string name="OPEN">Ouvert</string>
+    <string name="CLOSED">Fermé</string>
+    <string name="IS_JOINING">se joint au déjeuner</string>
+    <string name="OPEN_UNTIL">Ouvert jusqu\'a</string>
+    <string name="IS_EATING_TO">mange à (</string>
+</resources>
