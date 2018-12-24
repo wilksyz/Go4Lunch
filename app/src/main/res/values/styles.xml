@@ -47,4 +47,5 @@
     <style name="AlertDialogCustom" parent="Go4LunchTheme">
         <item name="android:colorForeground">@android:color/black</item>
     </style>
+
 </resources>

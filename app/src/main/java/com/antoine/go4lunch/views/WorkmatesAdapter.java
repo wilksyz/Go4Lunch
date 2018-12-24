@@ -6,12 +6,17 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.antoine.go4lunch.R;
+import com.antoine.go4lunch.models.firestore.Reservation;
 import com.antoine.go4lunch.models.firestore.User;
+import com.antoine.go4lunch.models.placeAPI.placeDetails.Result;
 import com.bumptech.glide.RequestManager;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-public class WorkmatesAdapter extends FirestoreRecyclerAdapter<User, WorkmatesViewHolder> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class WorkmatesAdapter extends FirestoreRecyclerAdapter<Reservation, WorkmatesViewHolder> {
 
     public interface Listener {
         void onDataChanged();
@@ -21,7 +26,7 @@ public class WorkmatesAdapter extends FirestoreRecyclerAdapter<User, WorkmatesVi
     private Listener callback;
     private int mNumActivity;
 
-    public WorkmatesAdapter(@NonNull FirestoreRecyclerOptions<User> options, RequestManager glide, Listener callback, int numActivity) {
+    public WorkmatesAdapter(@NonNull FirestoreRecyclerOptions<Reservation> options, RequestManager glide, Listener callback, int numActivity) {
         super(options);
         this.mGlide = glide;
         this.callback = callback;
@@ -29,7 +34,7 @@ public class WorkmatesAdapter extends FirestoreRecyclerAdapter<User, WorkmatesVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WorkmatesViewHolder holder, int position, @NonNull User model) {
+    public void onBindViewHolder(@NonNull WorkmatesViewHolder holder, int position, @NonNull Reservation model) {
         holder.updateWithUserList(model, this.mGlide, this.mNumActivity);
     }
 

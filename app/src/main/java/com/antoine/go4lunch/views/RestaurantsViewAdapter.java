@@ -17,12 +17,10 @@ public class RestaurantsViewAdapter extends RecyclerView.Adapter<RestaurantsView
 
     private final RequestManager mGlide;
     private List<DetailsRestaurant> mListOfRestaurants;
-    private String mLocation;
 
-    public RestaurantsViewAdapter(RequestManager glide, List<DetailsRestaurant> listOfRestaurants, String location) {
+    public RestaurantsViewAdapter(RequestManager glide, List<DetailsRestaurant> listOfRestaurants) {
         this.mGlide = glide;
         this.mListOfRestaurants = listOfRestaurants;
-        this.mLocation = location;
     }
 
     @NonNull
@@ -35,7 +33,7 @@ public class RestaurantsViewAdapter extends RecyclerView.Adapter<RestaurantsView
 
     @Override
     public void onBindViewHolder(@NonNull RestaurantsViewHolder restaurantsViewHolder, int i) {
-        restaurantsViewHolder.updateWithRestaurantList(mGlide, this.mListOfRestaurants.get(i), mLocation);
+        restaurantsViewHolder.updateWithRestaurantList(mGlide, this.mListOfRestaurants.get(i));
     }
 
     @Override

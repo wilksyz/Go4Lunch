@@ -4,6 +4,7 @@ package com.antoine.go4lunch.controlers.fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +18,6 @@ import android.widget.Toast;
 import com.antoine.go4lunch.R;
 import com.antoine.go4lunch.controlers.activity.InfoPageRestaurantActivity;
 import com.antoine.go4lunch.data.PlaceApiStream;
-import com.antoine.go4lunch.data.RestaurantHelper;
 import com.antoine.go4lunch.models.placeAPI.placeDetails.DetailsRestaurant;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -33,8 +33,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 
 import java.util.HashMap;
@@ -48,6 +46,7 @@ import io.reactivex.observers.DisposableObserver;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 /**
@@ -57,8 +56,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
 
     @BindView(R.id.mapView) MapView mMapView;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 191;
+    private static final String LATITUDE_LOCATION = "latitude location";
+    private static final String LONGITUDE_LOCATION = "longitude location";
     private static final String LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
-    protected static final int DEFAULT_ZOOM = 16;
+    protected static final int DEFAULT_ZOOM = 15;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
     private CameraPosition mCameraPosition;
@@ -144,6 +145,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                             mLastKnownLocation = task.getResult();
                             mLocation = (String.valueOf(mLastKnownLocation.getLatitude())+","+String.valueOf(mLastKnownLocation.getLongitude()));
                             queryLocation.put("location", mLocation);
+                            SharedPreferences.Editor saveSettings = getActivity().getSharedPreferences("Location", MODE_PRIVATE).edit();
+                            saveSettings.putString(LATITUDE_LOCATION, String.valueOf(mLastKnownLocation.getLatitude()));
+                            saveSettings.putString(LONGITUDE_LOCATION, String.valueOf(mLastKnownLocation.getLongitude()));
+                            saveSettings.apply();
                             if (mGoogleMap != null){
                                 centerCameraOnLocation();
                                 executeHttpRequestListOfRestaurant();
@@ -208,7 +213,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         if (mGoogleMap != null){
             addMarkerMap();
         }
-        createRestaurantInFirestore();
     }
 
     private void addMarkerMap(){
@@ -222,31 +226,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
             mSydney.setTag(i);
         }
         mGoogleMap.setOnMarkerClickListener(this);
-    }
-
-    private void createRestaurantInFirestore(){
-        int size = mListOfRestaurant.size();
-        for (int i = 0; i<size; i++){
-            int finalI = i;
-            DocumentReference db = RestaurantHelper.getRestaurantsCollection().document(mListOfRestaurant.get(i).getResult().getPlaceId());
-            db.get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> documentSnapshotTask) {
-                            if (documentSnapshotTask.isSuccessful()) {
-                                DocumentSnapshot document = documentSnapshotTask.getResult();
-                                if ( document.exists()) {
-                                    Log.d("TAG", "The document already exists");
-                                } else {
-                                    String placeId = mListOfRestaurant.get(finalI).getResult().getPlaceId();
-                                    RestaurantHelper.createRestaurant(placeId).addOnFailureListener(onFailureListener());
-                                }
-                            } else {
-                                Log.d("TAG", "get failed with ", documentSnapshotTask.getException());
-                            }
-                        }
-                    });
-        }
     }
 
     @Override

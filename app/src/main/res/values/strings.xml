@@ -22,6 +22,7 @@
     <string name="title_activity_settings">Settings</string>
     <string name="website">WEBSITE</string>
     <string name="like">LIKE</string>
+    <string name="not_like">NOT LIKE</string>
     <string name="call">CALL</string>
     <string name="it_is_the_image_restaurant">It is the image restaurant</string>
     <string name="SIGN_IN">Sign in</string>
@@ -39,5 +40,7 @@
     <string name="notification_title" translatable="false">Go4Lunch</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="notifications" translatable="false">Notifications</string>
+    <string name="NO_TIME_AVAILABLE">No time available</string>
+    <string name="JOIN">Join:</string>
 
 </resources>

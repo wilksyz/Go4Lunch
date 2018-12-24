@@ -65,6 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:numStars="3"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -87,15 +88,17 @@
         app:layout_constraintTop_toBottomOf="@+id/name_of_restaurant_textView"
         tools:text="@tools:sample/cities" />
 
-    <Button
+    <ToggleButton
         android:id="@+id/likeButton"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        style="@android:style/Widget.Button.Toggle"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:drawableTop="@drawable/ic_star"
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingTop="15dp"
-        android:text="@string/like"
+        android:textColor="@color/colorAccent"
+        android:textOff="@string/like"
+        android:textOn="@string/not_like"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toStartOf="@+id/webButton"
         app:layout_constraintHorizontal_bias="0.5"
@@ -104,13 +107,14 @@
 
     <Button
         android:id="@+id/webButton"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        style="@android:style/Widget.Button.Small"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:drawableTop="@drawable/ic_public"
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingTop="15dp"
         android:text="@string/website"
+        android:textColor="@color/colorAccent"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -135,13 +139,15 @@
 
     <Button
         android:id="@+id/call_button"
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        style="@android:style/Widget.Button.Small"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:drawableTop="@drawable/ic_phone"
         android:foreground="?android:attr/selectableItemBackground"
         android:paddingTop="15dp"
         android:text="@string/call"
+        android:textAllCaps="false"
+        android:textColor="@color/colorAccent"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toStartOf="@+id/likeButton"
         app:layout_constraintHorizontal_bias="0.5"

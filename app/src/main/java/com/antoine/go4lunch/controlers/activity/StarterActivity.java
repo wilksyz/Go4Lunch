@@ -11,13 +11,18 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.antoine.go4lunch.R;
+import com.antoine.go4lunch.data.ReservationHelper;
 import com.antoine.go4lunch.data.UserHelper;
+import com.antoine.go4lunch.models.firestore.User;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnFailureListener;
 
+import java.text.DateFormat;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,7 +65,7 @@ public class StarterActivity extends BaseActivity {
                                 new AuthUI.IdpConfig.GoogleBuilder().build()))
                         .setIsSmartLockEnabled(false, true)
                         .setTheme(R.style.LoginTheme)
-                        .setLogo(R.mipmap.ic_google)
+                        //.setLogo(R.mipmap.ic_chef)
                         .build(),
                 RC_SIGN_IN);
     }
@@ -101,7 +106,12 @@ public class StarterActivity extends BaseActivity {
             String username = this.getCurrentUser().getDisplayName();
             String uid = this.getCurrentUser().getUid();
 
-            UserHelper.createUser(uid, username, urlPicture, null).addOnFailureListener(this.onFailureListener());
+            UserHelper.createUser(uid, username, urlPicture).addOnFailureListener(this.onFailureListener());
+
+            DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.FRANCE);
+            String date = df.format(new Date());
+            User user = new User(uid, username, urlPicture);
+            ReservationHelper.createReservation(uid, date, user).addOnFailureListener(this.onFailureListener());
         }
     }
 

@@ -30,13 +30,17 @@ public class Result {
     private String placeId;
     @SerializedName("rating")
     @Expose
-    private Double rating;
+    private float rating;
     @SerializedName("types")
     @Expose
     private List<String> types = null;
     @SerializedName("website")
     @Expose
     private String website;
+
+    private String distance;
+
+    private String reservation;
 
     public String getFormattedAddress() {
         return formattedAddress;
@@ -94,11 +98,11 @@ public class Result {
         this.placeId = placeId;
     }
 
-    public Double getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(Double rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
@@ -118,4 +122,19 @@ public class Result {
         this.website = website;
     }
 
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+
+    public String getReservation() {
+        return reservation;
+    }
+
+    public void setReservation(String reservation) {
+        this.reservation = reservation;
+    }
 }

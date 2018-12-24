@@ -21,8 +21,8 @@ public class UserHelper {
 
     // --- CREATE ---
 
-    public static Task<Void> createUser(String uid, String username, String urlPicture,@Nullable String myRestaurant) {
-        User userToCreate = new User(uid, username, urlPicture, myRestaurant);
+    public static Task<Void> createUser(String uid, String username, String urlPicture) {
+        User userToCreate = new User(uid, username, urlPicture);
         return UserHelper.getUsersCollection().document(uid).set(userToCreate);
     }
 
@@ -38,21 +38,9 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(uid).update("mUsername", username);
     }
 
-    public static Task<Void> updateSelectedRestaurant(String selectedRestaurantId, String uid) {
-        return UserHelper.getUsersCollection().document(uid).update("myRestaurant", selectedRestaurantId);
-    }
     // --- DELETE ---
 
     public static Task<Void> deleteUser(String uid) {
         return UserHelper.getUsersCollection().document(uid).delete();
-    }
-
-    public static Query getAllUser(){
-        return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
-    }
-
-    public static Query getAllUserSelectRestaurant(String placeId){
-        return UserHelper.getUsersCollection()
-                .whereEqualTo("myRestaurant", placeId);
     }
 }

@@ -12,14 +12,10 @@ import android.widget.TextView;
 
 import com.antoine.go4lunch.R;
 import com.antoine.go4lunch.data.PlaceApiStream;
-import com.antoine.go4lunch.data.RestaurantHelper;
 import com.antoine.go4lunch.data.UserHelper;
 import com.antoine.go4lunch.models.matrixAPI.DistanceMatrixRestaurant;
 import com.antoine.go4lunch.models.placeAPI.placeDetails.DetailsRestaurant;
 import com.bumptech.glide.RequestManager;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.MetadataChanges;
@@ -48,8 +44,7 @@ public class RestaurantsViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.address_restaurant_textView) TextView mAddressOfRestaurant;
     @BindView(R.id.opening_restaurant_textView) TextView mOpeningRestaurant;
     private Map<String,String> queryLocation = new HashMap<>();
-    private CompositeDisposable disposables = new CompositeDisposable();
-    private long mRating;
+    private float mRating;
 
     public RestaurantsViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -57,20 +52,25 @@ public class RestaurantsViewHolder extends RecyclerView.ViewHolder {
         queryLocation.put("key", itemView.getContext().getString(R.string.google_maps_api));
     }
 
-    public void updateWithRestaurantList(RequestManager glide, DetailsRestaurant restaurant, String location){
+    public void updateWithRestaurantList(RequestManager glide, DetailsRestaurant restaurant){
         //Log.e("TAG","Je suis "+restaurant.getResult().getName()+" et mon placeId est: "+restaurant.getResult().getPlaceId());
-        mNoteOfTheRestaurant.setVisibility(View.INVISIBLE);
-        if (restaurant.getResult().getPhotos() != null){
-            String url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=2976&photoreference="+restaurant.getResult().getPhotos().get(0).getPhotoReference()+"&key="+itemView.getContext().getString(R.string.google_maps_api);
-            glide.load(url)
-                    .into(mImageRestaurant);
-        }
+        //Log.e("TAG","Je suis "+restaurant.getResult().getName()+" et mon url image est: "+restaurant.getResult().getPhotos());
+        String mUrlImage = getUrlImage(restaurant);
+        glide.load(mUrlImage).into(mImageRestaurant);
         mNameOfRestaurant.setText(restaurant.getResult().getName());
         mAddressOfRestaurant.setText(restaurant.getResult().getFormattedAddress());
         getOpening(restaurant);
-        getDistanceOfRestaurant(location, restaurant);
-        getNoteOfRestaurant(restaurant);
-        getSelectedThisRestaurant(restaurant.getResult().getPlaceId());
+        getRatingOfRestaurant(restaurant);
+        getSelectedThisRestaurant(restaurant);
+        getDistanceOfRestaurant(restaurant);
+    }
+
+    private String getUrlImage(DetailsRestaurant restaurant){
+        String url = null;
+        if (restaurant.getResult().getPhotos() != null) {
+            url = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=2976&photoreference=" + restaurant.getResult().getPhotos().get(0).getPhotoReference() + "&key=" + itemView.getContext().getString(R.string.google_maps_api);
+        }
+        return url;
     }
 
     private void getOpening(DetailsRestaurant restaurant){
@@ -103,83 +103,27 @@ public class RestaurantsViewHolder extends RecyclerView.ViewHolder {
                 mOpeningRestaurant.setText(itemView.getContext().getString(R.string.CLOSED));
                 mOpeningRestaurant.setTextColor(itemView.getResources().getColor(R.color.colorPrimaryDark));
                 mOpeningRestaurant.setTypeface(Typeface.DEFAULT_BOLD);
+            }else{
+                mOpeningRestaurant.setText(itemView.getContext().getString(R.string.NO_TIME_AVAILABLE));
             }
         }
     }
 
-    private void getDistanceOfRestaurant(String location, DetailsRestaurant restaurant){
-        queryLocation.put("origins", location);
-        queryLocation.put("destinations","place_id:"+restaurant.getResult().getPlaceId());
-        disposables.add(PlaceApiStream.streamFetchDistanceMatrix(queryLocation).subscribeWith(new DisposableObserver<DistanceMatrixRestaurant>() {
-            @Override
-            public void onNext(DistanceMatrixRestaurant distanceMatrixRestaurant) {
-                mDistanceIntoRestaurant.setText(distanceMatrixRestaurant.getRows().get(0).getElements().get(0).getDistance().getText());
-            }
-            @Override
-            public void onError(Throwable e) {
-                Log.e("TAG","On Error",e);
-            }
-
-            @Override
-            public void onComplete() {
-                Log.i("TAG","On Complete !!");
-            }
-        }));
+    private void getRatingOfRestaurant(DetailsRestaurant restaurant){
+        mRating = restaurant.getResult().getRating();
+        mRating = (mRating/5)*3;
+        mNoteOfTheRestaurant.setRating(mRating);
     }
 
-    private void getNoteOfRestaurant(DetailsRestaurant restaurant){
-        RestaurantHelper.getRestaurantsCollection().document(restaurant.getResult().getPlaceId())
-                .addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot,
-                                        @javax.annotation.Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Log.w("TAG", "Listen failed.", e);
-                            return;
-                        }
-                        if (documentSnapshot != null && documentSnapshot.exists()) {
-                            mRating = documentSnapshot.getLong("rating");
-                            if (mRating < 5 && mRating != 0){
-                                mNoteOfTheRestaurant.setNumStars(1);
-                                mNoteOfTheRestaurant.setRating(1);
-                                mNoteOfTheRestaurant.setVisibility(View.VISIBLE);
-                            }else if(mRating < 10 && mRating != 0){
-                                mNoteOfTheRestaurant.setNumStars(2);
-                                mNoteOfTheRestaurant.setRating(2);
-                                mNoteOfTheRestaurant.setVisibility(View.VISIBLE);
-                            }else if(mRating > 10){
-                                mNoteOfTheRestaurant.setNumStars(3);
-                                mNoteOfTheRestaurant.setRating(3);
-                                mNoteOfTheRestaurant.setVisibility(View.VISIBLE);
-                            }
-                        } else {
-                            Log.d("TAG", "Current data: null");
-                        }
-                    }
-                });
+    private void getSelectedThisRestaurant(DetailsRestaurant restaurant){
+        if (restaurant.getResult().getReservation() != null){
+            mPersonHasSelectedRestaurant.setText(restaurant.getResult().getReservation());
+        }
     }
 
-    private void getSelectedThisRestaurant(String placeId){
-        UserHelper.getUsersCollection()
-                .whereEqualTo("myRestaurant", placeId)
-                .addSnapshotListener(MetadataChanges.INCLUDE, new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value,
-                                        @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            Log.w("TAG", "Listen failed.", e);
-                            return;
-                        }
-
-                        List<String> client = new ArrayList<>();
-                        for (QueryDocumentSnapshot doc : value) {
-                            if (doc.get("username") != null) {
-                                client.add(doc.getString("username"));
-                            }
-                        }
-                        String numberClient = "("+client.size()+")";
-                        mPersonHasSelectedRestaurant.setText(numberClient);
-                    }
-                });
+    private void getDistanceOfRestaurant(DetailsRestaurant restaurant){
+        if (restaurant.getResult().getDistance() != null){
+            mDistanceIntoRestaurant.setText(restaurant.getResult().getDistance());
+        }
     }
 }

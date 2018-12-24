@@ -32,4 +32,7 @@
     <string name="IS_JOINING">se joint au déjeuner</string>
     <string name="OPEN_UNTIL">Ouvert jusqu\'a</string>
     <string name="IS_EATING_TO">mange à (</string>
+    <string name="not_like">J\'aime pas</string>
+    <string name="NO_TIME_AVAILABLE">Aucun horaire disponible</string>
+    <string name="JOIN">Se joint:</string>
 </resources>

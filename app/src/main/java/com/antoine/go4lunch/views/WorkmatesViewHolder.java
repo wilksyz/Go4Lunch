@@ -9,12 +9,16 @@ import android.widget.TextView;
 
 import com.antoine.go4lunch.R;
 import com.antoine.go4lunch.data.PlaceApiStream;
+import com.antoine.go4lunch.models.firestore.Reservation;
 import com.antoine.go4lunch.models.firestore.User;
 import com.antoine.go4lunch.models.placeAPI.placeDetails.DetailsRestaurant;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -36,58 +40,37 @@ public class WorkmatesViewHolder extends RecyclerView.ViewHolder{
         queryLocation.put("key", itemView.getContext().getString(R.string.google_maps_api));
     }
 
-    protected void updateWithUserList(User user, RequestManager glide, int numActivity){
-        if (user.getUrlPicture() != null){
-            glide.load(user.getUrlPicture())
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(mUserProfileImage);
-        }
-        if (numActivity == 1){
-            mProfileTextView.setEnabled(false);
-            mProfileTextView.setText(configureTextView(user));
-        }else if (numActivity == 2){
-            String text = user.getUsername()+" "+itemView.getContext().getString(R.string.IS_JOINING);
-            mProfileTextView.setText(text);
-        }
+    protected void updateWithUserList(Reservation user, RequestManager glide, int numActivity){
+        if (user.getmUser() != null){
+            if (user.getmUser().getUrlPicture() != null){
+                glide.load(user.getmUser().getUrlPicture())
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(mUserProfileImage);
+            }
 
-    }
-
-    private String configureTextView(User user){
-        mUsername = user.getUsername();
-        String idRestaurant;
-        if (user.getMyRestaurant() != null){
-            idRestaurant = user.getMyRestaurant();
-            queryLocation.put("placeid", idRestaurant);
-            executeHttpRequestListOfRestaurant();
-            mProfileTextView.setEnabled(true);
-            return mUsername;
-        }else{
-            String text = mUsername+" "+ itemView.getContext().getString(R.string.HASNT_DECIDED_YET);
-            return text;
-        }
-    }
-
-    private void executeHttpRequestListOfRestaurant(){
-        disposables.add(PlaceApiStream.streamFetchDetailsPlace(queryLocation).subscribeWith(getDisposable()));
-    }
-
-    private DisposableObserver<DetailsRestaurant> getDisposable(){
-        //manages so api request is OK or not OK
-        return new DisposableObserver<DetailsRestaurant>() {
-            @Override
-            public void onNext(DetailsRestaurant listOfRestaurant) {
-                String text = mUsername+" "+itemView.getContext().getString(R.string.IS_EATING_TO)+listOfRestaurant.getResult().getName()+")";
+            if (numActivity == 1){
+                DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.FRANCE);
+                String date = df.format(new Date());
+                if (date.equals(user.getmCreatedDate()) && user.getmSelectedRestaurant() != null){
+                    mProfileTextView.setEnabled(true);
+                    mProfileTextView.setText(configureTextView(user, 1));
+                }else{
+                    mProfileTextView.setEnabled(false);
+                    mProfileTextView.setText(configureTextView(user, 2));
+                }
+            }else if (numActivity == 2){
+                String text = user.getmUser().getUsername()+" "+itemView.getContext().getString(R.string.IS_JOINING);
                 mProfileTextView.setText(text);
             }
-            @Override
-            public void onError(Throwable e) {
-                Log.e("TAG","On Error",e);
-            }
+        }
+    }
 
-            @Override
-            public void onComplete() {
-                Log.i("TAG","On Complete !!");
-            }
-        };
+    private String configureTextView(Reservation user, int indicateur){
+        if (indicateur == 1){
+            mUsername = user.getmUser().getUsername()+" "+itemView.getContext().getString(R.string.IS_EATING_TO)+user.getmRestaurantName()+")";
+        }else if (indicateur == 2){
+            mUsername = user.getmUser().getUsername()+" "+itemView.getContext().getString(R.string.HASNT_DECIDED_YET);
+        }
+        return mUsername;
     }
 }
