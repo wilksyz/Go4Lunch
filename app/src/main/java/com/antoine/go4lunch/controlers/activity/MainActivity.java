@@ -80,7 +80,7 @@ public class MainActivity extends BaseActivity {
         this.configureBottomNavigationView();
         this.configureToolBar();
         this.configureNavigationDrawer();
-        //this.configureShowFragment();
+        this.configureShowFragment();
         setAlarm();
 
 
@@ -95,8 +95,8 @@ public class MainActivity extends BaseActivity {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 14);
-        calendar.set(Calendar.MINUTE, 36);
+        calendar.set(Calendar.HOUR_OF_DAY, 17);
+        calendar.set(Calendar.MINUTE, 25);
         long timeInMillis =calendar.getTimeInMillis();
         if (calendar.before(Calendar.getInstance())){
             timeInMillis = timeInMillis + AlarmManager.INTERVAL_DAY;
@@ -128,6 +128,10 @@ public class MainActivity extends BaseActivity {
                             case R.id.settings:
                                 Intent intentSettings = new Intent(MainActivity.this, SettingsActivity.class);
                                 startActivity(intentSettings);
+                                return true;
+                            case R.id.chat:
+                                Intent intentChat = new Intent(MainActivity.this, ChatActivity.class);
+                                startActivity(intentChat);
                                 return true;
                             case R.id.your_lunch:
                                 if (getCurrentUser() != null){
@@ -209,7 +213,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public LatLngBounds toBounds(LatLng center) {
-        double distanceFromCenterToCorner = 20000 * Math.sqrt(2.0);
+        double distanceFromCenterToCorner = 2000 * Math.sqrt(2.0);
         LatLng southwestCorner =
                 SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 225.0);
         LatLng northeastCorner =
@@ -255,7 +259,7 @@ public class MainActivity extends BaseActivity {
                 Place place = PlaceAutocomplete.getPlace(this, data);
                 Log.e("TAG", "Place: " + place.getName());
                 if (mMapFragment != null && mMapFragment.isVisible()){
-                    Log.e("TAG","Maps visible");
+                    mMapFragment.updateUiAfterSearchWithSearchBar(place.getId());
                 }else if (mRestaurantView != null && mRestaurantView.isVisible()){
                     mRestaurantView.updateRecyclerView(place.getId());
                 }
@@ -277,7 +281,7 @@ public class MainActivity extends BaseActivity {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         Log.e("TAG","Passage home");
-                        //mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mMapFragment,"1").commit();
+                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mMapFragment,"1").commit();
                         return true;
                     case R.id.navigation_dashboard:
                         Log.e("TAG","Passage list view");

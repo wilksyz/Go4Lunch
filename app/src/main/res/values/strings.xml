@@ -42,5 +42,6 @@
     <string name="notifications" translatable="false">Notifications</string>
     <string name="NO_TIME_AVAILABLE">No time available</string>
     <string name="JOIN">Join:</string>
+    <string name="CHAT" translatable="false">CHAT</string>
 
 </resources>

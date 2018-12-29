@@ -11,6 +11,10 @@
             android:title="@string/settings"
             android:icon="@drawable/ic_settings"/>
         <item
+            android:id="@+id/chat"
+            android:title="@string/CHAT"
+            android:icon="@drawable/ic_chat"/>
+        <item
             android:id="@+id/logout"
             android:title="@string/logout"
             android:icon="@drawable/ic_power_settings"/>
