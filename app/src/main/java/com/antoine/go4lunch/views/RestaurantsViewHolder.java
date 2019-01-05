@@ -53,8 +53,6 @@ public class RestaurantsViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void updateWithRestaurantList(RequestManager glide, DetailsRestaurant restaurant){
-        //Log.e("TAG","Je suis "+restaurant.getResult().getName()+" et mon placeId est: "+restaurant.getResult().getPlaceId());
-        //Log.e("TAG","Je suis "+restaurant.getResult().getName()+" et mon url image est: "+restaurant.getResult().getPhotos());
         String mUrlImage = getUrlImage(restaurant);
         glide.load(mUrlImage).into(mImageRestaurant);
         mNameOfRestaurant.setText(restaurant.getResult().getName());

@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -23,11 +22,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.MetadataChanges;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -59,10 +53,7 @@ public class NotificationsService  extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e("TAG", "NotificationService");
-
         this.mContext = context;
-        Log.e("TAG","Notification");
         queryLocation.put("key", context.getString(R.string.google_maps_api));
         mStatusNotification = context.getSharedPreferences("Notification", MODE_PRIVATE).getBoolean(STATUS_NOTIFICATION, true);
         DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, Locale.FRANCE);
@@ -70,7 +61,6 @@ public class NotificationsService  extends BroadcastReceiver {
         if (mStatusNotification){
             getSettingsNotifications();
         }
-
     }
 
     private void getSettingsNotifications(){
@@ -127,7 +117,6 @@ public class NotificationsService  extends BroadcastReceiver {
     }
 
     private void executeHttpRequestRestaurant(){
-
         disposable.add(PlaceApiStream.streamFetchDetailsPlace(queryLocation).subscribeWith(new DisposableObserver<DetailsRestaurant>() {
             @Override
             public void onNext(DetailsRestaurant detailsRestaurant) {
@@ -187,6 +176,4 @@ public class NotificationsService  extends BroadcastReceiver {
         // 7 - Show notification
         notificationManager.notify(NOTIFICATION_TAG, NOTIFICATION_ID, notificationBuilder.build());
     }
-
-
 }

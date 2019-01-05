@@ -81,11 +81,7 @@ public class MainActivity extends BaseActivity {
         this.configureToolBar();
         this.configureNavigationDrawer();
         this.configureShowFragment();
-        setAlarm();
-
-
-
-
+        this.setAlarm();
     }
 
     private void setAlarm(){
@@ -93,16 +89,20 @@ public class MainActivity extends BaseActivity {
         Intent intents = new Intent(this, NotificationsService.class);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 0, intents, 0);
 
+
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, getTimeInMillisForAlarm(), AlarmManager.INTERVAL_DAY, alarmIntent);
+    }
+
+    public static long getTimeInMillisForAlarm(){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 17);
-        calendar.set(Calendar.MINUTE, 25);
+        calendar.set(Calendar.HOUR_OF_DAY, 12);
+        calendar.set(Calendar.MINUTE, 0);
         long timeInMillis =calendar.getTimeInMillis();
         if (calendar.before(Calendar.getInstance())){
             timeInMillis = timeInMillis + AlarmManager.INTERVAL_DAY;
         }
-
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, timeInMillis, AlarmManager.INTERVAL_DAY, alarmIntent);
+        return timeInMillis;
     }
 
     private void configureNavigationDrawer(){
@@ -195,9 +195,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private Boolean isCurrentUserLogged(){
-        return (this.getCurrentUser() != null); }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
@@ -212,7 +209,7 @@ public class MainActivity extends BaseActivity {
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
     }
 
-    public LatLngBounds toBounds(LatLng center) {
+    public static LatLngBounds toBounds(LatLng center) {
         double distanceFromCenterToCorner = 2000 * Math.sqrt(2.0);
         LatLng southwestCorner =
                 SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 225.0);
@@ -257,7 +254,6 @@ public class MainActivity extends BaseActivity {
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(this, data);
-                Log.e("TAG", "Place: " + place.getName());
                 if (mMapFragment != null && mMapFragment.isVisible()){
                     mMapFragment.updateUiAfterSearchWithSearchBar(place.getId());
                 }else if (mRestaurantView != null && mRestaurantView.isVisible()){
@@ -280,16 +276,13 @@ public class MainActivity extends BaseActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
-                        Log.e("TAG","Passage home");
-                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mMapFragment,"1").commit();
+                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mMapFragment,"1").addToBackStack("1").commit();
                         return true;
                     case R.id.navigation_dashboard:
-                        Log.e("TAG","Passage list view");
-                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mRestaurantView,"2").commit();
+                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mRestaurantView,"2").addToBackStack("2").commit();
                         return true;
                     case R.id.navigation_notifications:
-                        Log.e("TAG","Passage workmates");
-                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mWorkmatesView,"3").commit();
+                        mFragmentManager.beginTransaction().replace(R.id.fragment_layout,mWorkmatesView,"3").addToBackStack("3").commit();
                         return true;
                 }
                 return false;
@@ -298,7 +291,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void configureShowFragment(){
-        mFragmentManager.beginTransaction().add(R.id.fragment_layout,mMapFragment, "1").commit();
+        mFragmentManager.beginTransaction().add(R.id.fragment_layout,mMapFragment, "1").addToBackStack("1").commit();
     }
 
     private void signOutUserFromFirebase(){

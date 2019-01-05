@@ -60,12 +60,10 @@ public class StarterActivity extends BaseActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(Arrays.asList(
-                                new AuthUI.IdpConfig.EmailBuilder().build(),
                                 new AuthUI.IdpConfig.FacebookBuilder().build(),
                                 new AuthUI.IdpConfig.GoogleBuilder().build()))
                         .setIsSmartLockEnabled(false, true)
                         .setTheme(R.style.LoginTheme)
-                        //.setLogo(R.mipmap.ic_chef)
                         .build(),
                 RC_SIGN_IN);
     }

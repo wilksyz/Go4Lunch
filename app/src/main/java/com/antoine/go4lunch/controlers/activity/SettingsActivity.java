@@ -23,7 +23,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
 
-        mStatusNotification = getSharedPreferences("Notification", MODE_PRIVATE).getBoolean(STATUS_NOTIFICATION, false);
+        mStatusNotification = getSharedPreferences("Notification", MODE_PRIVATE).getBoolean(STATUS_NOTIFICATION, true);
         mNotificationSwitchButton.setChecked(mStatusNotification);
 
         mNotificationSwitchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

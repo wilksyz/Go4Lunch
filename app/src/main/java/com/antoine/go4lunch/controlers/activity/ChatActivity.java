@@ -15,7 +15,6 @@ import com.antoine.go4lunch.R;
 import com.antoine.go4lunch.data.MessageHelper;
 import com.antoine.go4lunch.models.firestore.Message;
 import com.antoine.go4lunch.views.ChatAdapter;
-import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,7 +49,7 @@ public class ChatActivity extends BaseActivity implements ChatAdapter.Listener{
     }
 
     private void configureRecyclerView(){
-        this.mChatAdapter = new ChatAdapter(generateOptionsForAdapter(MessageHelper.getAllMessageForChatRoom()), Glide.with(this),this, this.getCurrentUser().getDisplayName());
+        this.mChatAdapter = new ChatAdapter(generateOptionsForAdapter(MessageHelper.getAllMessageForChatRoom()),this, this.getCurrentUser().getDisplayName());
         mChatAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {

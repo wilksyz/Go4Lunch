@@ -66,7 +66,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     private static final String LATITUDE_LOCATION = "latitude location";
     private static final String LONGITUDE_LOCATION = "longitude location";
     private static final String LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
-    protected static final int DEFAULT_ZOOM = 12;
+    protected static final int DEFAULT_ZOOM = 18;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
     private CameraPosition mCameraPosition;
@@ -81,6 +81,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     private Bundle msavedInstanceState;
     private String mDayDate;
     private Marker mMarker;
+    private Marker[] mMarkerList = new Marker[20];
 
     public MapFragment() {
         // Required empty public constructor
@@ -102,8 +103,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         createMap(savedInstanceState);
         queryLocation.put("key", getString(R.string.google_maps_api));
         checkPermissionAndLoadTheMap();
-
-
         return view;
     }
 
@@ -117,7 +116,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         this.updateLocationUI();
-        //mGoogleMap.setPadding(0, 1700, 25, 0);
     }
 
     private boolean hasLocationPermissions() {
@@ -192,7 +190,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
                 mLastKnownLocation = null;
             }
         } catch (SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage());
+            Log.e("Exception: ", e.getMessage());
         }
     }
 
@@ -256,13 +254,18 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
     }
 
     private void addMarkerMap(int numberClient, int i){
+        if (mMarkerList[i] != null){
+            mMarkerList[i].remove();
+        }
+
         boolean notReserved = numberClient == 0;
             mCurentLocation = new LatLng(mListOfRestaurant.get(i).getResult().getGeometry().getLocation().getLat(), mListOfRestaurant.get(i).getResult().getGeometry().getLocation().getLng());
             mMarker = mGoogleMap.addMarker(new MarkerOptions()
                     .position(mCurentLocation)
                     .title(mListOfRestaurant.get(i).getResult().getName())
-                    .icon(BitmapDescriptorFactory.defaultMarker(notReserved ? BitmapDescriptorFactory.HUE_AZURE : BitmapDescriptorFactory.HUE_RED)));
+                    .icon(BitmapDescriptorFactory.fromResource(notReserved ? R.mipmap.ic_marker_not_selected : R.mipmap.ic_marker_selected)));
         mMarker.setTag(i);
+        mMarkerList[i] = mMarker;
         mGoogleMap.setOnMarkerClickListener(this);
     }
 
@@ -341,5 +344,4 @@ public class MapFragment extends Fragment implements GoogleMap.OnMarkerClickList
         super.onLowMemory();
         mMapView.onLowMemory();
     }
-
 }

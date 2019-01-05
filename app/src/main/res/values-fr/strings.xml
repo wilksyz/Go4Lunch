@@ -35,4 +35,5 @@
     <string name="not_like">J\'aime pas</string>
     <string name="NO_TIME_AVAILABLE">Aucun horaire disponible</string>
     <string name="JOIN">Se joint:</string>
+    <string name="enter_your_message">Ecrivez un message</string>
 </resources>

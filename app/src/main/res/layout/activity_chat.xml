@@ -15,7 +15,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
-        android:hint="Enter your text"
+        android:hint="@string/enter_your_message"
         android:inputType="none"
         android:textColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -43,5 +43,6 @@
     <string name="NO_TIME_AVAILABLE">No time available</string>
     <string name="JOIN">Join:</string>
     <string name="CHAT" translatable="false">CHAT</string>
+    <string name="enter_your_message">Enter your message</string>
 
 </resources>

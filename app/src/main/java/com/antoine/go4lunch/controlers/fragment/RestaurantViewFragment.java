@@ -220,7 +220,6 @@ public class RestaurantViewFragment extends BaseFragment {
     private void setDistanceToList(int i, DistanceMatrixRestaurant distanceMatrixRestaurant){
         mNumberRequestMatrix ++;
         mListOfRestaurant.get(i).getResult().setDistance(distanceMatrixRestaurant.getRows().get(0).getElements().get(0).getDistance().getText());
-        mRestaurantAdapter.notifyDataSetChanged();
         if (mNumberRequestMatrix == mListOfRestaurant.size()){
             mRestaurantAdapter.notifyDataSetChanged();
             mNumberRequestMatrix = 0;

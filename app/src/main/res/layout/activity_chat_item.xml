@@ -2,15 +2,16 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint_chat"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/com_facebook_blue">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/textView_date_viewHolder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:textColor="@android:color/black"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="@+id/textView_message_viewHolder"
         app:layout_constraintStart_toStartOf="@+id/textView_message_viewHolder"
@@ -24,8 +25,11 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/colorAccent"
+        android:background="@drawable/custom_button"
+        android:padding="5dp"
+        android:textColor="@android:color/background_light"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_date_viewHolder"
         tools:text="It's the first message" />
@@ -37,6 +41,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:textColor="@android:color/black"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textView_message_viewHolder"

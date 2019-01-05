@@ -54,7 +54,6 @@ public class InfoPageRestaurantActivity extends AppCompatActivity implements Wor
     private float mRating;
     private Result mDetailsRestaurant;
     private String uIdUser;
-    private String mMyRestaurant;
     public WorkmatesAdapter mWorkmatesAdapter;
     private String mDayDate;
     private Reservation mUserReservation;

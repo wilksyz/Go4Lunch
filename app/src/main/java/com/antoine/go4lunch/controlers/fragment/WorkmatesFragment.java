@@ -9,14 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import com.antoine.go4lunch.R;
 import com.antoine.go4lunch.controlers.activity.InfoPageRestaurantActivity;
 import com.antoine.go4lunch.data.ReservationHelper;
-import com.antoine.go4lunch.data.UserHelper;
 import com.antoine.go4lunch.models.ItemClickSupport;
 import com.antoine.go4lunch.models.firestore.Reservation;
-import com.antoine.go4lunch.models.firestore.User;
-import com.antoine.go4lunch.models.placeAPI.placeDetails.Result;
 import com.antoine.go4lunch.views.WorkmatesAdapter;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -77,6 +76,8 @@ public class WorkmatesFragment extends Fragment implements WorkmatesAdapter.List
                             Intent intent = new Intent(getActivity(), InfoPageRestaurantActivity.class);
                             intent.putExtra("placeId", placeId);
                             startActivity(intent);
+                        }else{
+                            Toast.makeText(getContext(), R.string.YOU_HAVE_NOT_CHOSEN_A_RESTAURANT_FOR_LUNCH_YET, Toast.LENGTH_LONG).show();
                         }
                     }
                 });
