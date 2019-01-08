@@ -90,7 +90,7 @@
 
     <ToggleButton
         android:id="@+id/likeButton"
-        style="@android:style/Widget.Button.Toggle"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:drawableTop="@drawable/ic_star"
@@ -107,7 +107,7 @@
 
     <Button
         android:id="@+id/webButton"
-        style="@android:style/Widget.Button.Small"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:drawableTop="@drawable/ic_public"
@@ -139,7 +139,7 @@
 
     <Button
         android:id="@+id/call_button"
-        style="@android:style/Widget.Button.Small"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:drawableTop="@drawable/ic_phone"
