@@ -1,20 +1,14 @@
 package com.antoine.go4lunch.views;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.antoine.go4lunch.R;
 import com.antoine.go4lunch.models.firestore.Reservation;
-import com.antoine.go4lunch.models.firestore.User;
-import com.antoine.go4lunch.models.placeAPI.placeDetails.Result;
 import com.bumptech.glide.RequestManager;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class WorkmatesAdapter extends FirestoreRecyclerAdapter<Reservation, WorkmatesViewHolder> {
 

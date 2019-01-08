@@ -38,7 +38,6 @@ import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;

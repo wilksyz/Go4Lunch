@@ -2,6 +2,7 @@ package com.antoine.go4lunch.controlers.activity;
 
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

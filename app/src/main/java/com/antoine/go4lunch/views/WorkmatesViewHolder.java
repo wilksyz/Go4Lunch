@@ -2,16 +2,12 @@ package com.antoine.go4lunch.views;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.antoine.go4lunch.R;
-import com.antoine.go4lunch.data.PlaceApiStream;
 import com.antoine.go4lunch.models.firestore.Reservation;
-import com.antoine.go4lunch.models.firestore.User;
-import com.antoine.go4lunch.models.placeAPI.placeDetails.DetailsRestaurant;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -24,7 +20,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableObserver;
 
 public class WorkmatesViewHolder extends RecyclerView.ViewHolder{
 

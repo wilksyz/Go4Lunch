@@ -2,37 +2,23 @@ package com.antoine.go4lunch.views;
 
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.antoine.go4lunch.R;
-import com.antoine.go4lunch.data.PlaceApiStream;
-import com.antoine.go4lunch.data.UserHelper;
-import com.antoine.go4lunch.models.matrixAPI.DistanceMatrixRestaurant;
 import com.antoine.go4lunch.models.placeAPI.placeDetails.DetailsRestaurant;
 import com.bumptech.glide.RequestManager;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.MetadataChanges;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableObserver;
 
 public class RestaurantsViewHolder extends RecyclerView.ViewHolder {
 

@@ -4,7 +4,6 @@ import com.antoine.go4lunch.models.matrixAPI.DistanceMatrixRestaurant;
 import com.antoine.go4lunch.models.placeAPI.placeDetails.DetailsRestaurant;
 import com.antoine.go4lunch.models.placeAPI.placeSearch.ListOfRestaurant;
 
-
 import java.util.Map;
 
 import io.reactivex.Observable;

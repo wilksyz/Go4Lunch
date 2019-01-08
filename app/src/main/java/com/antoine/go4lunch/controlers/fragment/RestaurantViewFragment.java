@@ -20,7 +20,6 @@ import com.antoine.go4lunch.R;
 import com.antoine.go4lunch.controlers.activity.InfoPageRestaurantActivity;
 import com.antoine.go4lunch.data.PlaceApiStream;
 import com.antoine.go4lunch.data.ReservationHelper;
-import com.antoine.go4lunch.data.UserHelper;
 import com.antoine.go4lunch.models.ItemClickSupport;
 import com.antoine.go4lunch.models.matrixAPI.DistanceMatrixRestaurant;
 import com.antoine.go4lunch.models.placeAPI.placeDetails.DetailsRestaurant;
