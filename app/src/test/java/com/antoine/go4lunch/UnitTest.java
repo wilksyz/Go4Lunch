@@ -1,10 +1,8 @@
 package com.antoine.go4lunch;
 
-import android.app.AlarmManager;
+
 
 import com.antoine.go4lunch.controlers.activity.MainActivity;
-import com.antoine.go4lunch.controlers.fragment.MapFragment;
-import com.antoine.go4lunch.views.ChatViewHolder;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -12,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -21,7 +18,7 @@ import static org.junit.Assert.*;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class ExampleUnitTest {
+public class UnitTest {
 
     private MainActivity mainActivity;
 

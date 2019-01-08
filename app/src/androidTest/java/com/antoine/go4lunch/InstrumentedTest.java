@@ -33,7 +33,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 @RunWith(AndroidJUnit4.class)
 
-public class   ExampleInstrumentedTest {
+public class InstrumentedTest {
 
     Map<String,String> queryLocation = new HashMap<>();
 
