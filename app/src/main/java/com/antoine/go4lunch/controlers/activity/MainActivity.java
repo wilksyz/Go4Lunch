@@ -135,46 +135,52 @@ public class MainActivity extends BaseActivity {
                                 return true;
                             case R.id.your_lunch:
                                 if (getCurrentUser() != null){
-                                    ReservationHelper.getReservation(getCurrentUser().getUid())
-                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<DocumentSnapshot> documentSnapshotTask) {
-                                                    if (documentSnapshotTask.isSuccessful()) {
-                                                        DocumentSnapshot document = documentSnapshotTask.getResult();
-                                                        if (document.exists()) {
-                                                            String myRestaurant = document.getString("mSelectedRestaurant");
-                                                            String dateDatabase = document.getString("mCreatedDate");
-                                                            if (myRestaurant != null && mDayDate.equals(dateDatabase)){
-                                                                Intent intentYourLunch = new Intent(MainActivity.this, InfoPageRestaurantActivity.class);
-                                                                intentYourLunch.putExtra("placeId", myRestaurant);
-                                                                startActivity(intentYourLunch);
-                                                            }else{
-                                                                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.AlertDialogCustom));
-                                                                builder.setTitle(getResources().getString(R.string.YOUR_LUNCH))
-                                                                        .setMessage(getResources().getString(R.string.YOU_HAVE_NOT_CHOSEN_A_RESTAURANT_FOR_LUNCH_YET))
-                                                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                                            @Override
-                                                                            public void onClick(DialogInterface dialog, int which) {
-                                                                            }
-                                                                        })
-                                                                        .create()
-                                                                        .show();
-                                                            }
-                                                        } else {
-                                                            Log.d("TAG", "No such document");
-                                                        }
-                                                    } else {
-                                                        Log.d("TAG", "get failed with ", documentSnapshotTask.getException());
-                                                    }
-                                                }
-                                            });
+                                    getYourLunch();
                                 }
-
                                 return true;
                         }
                         return true;
                     }
                 });
+    }
+
+    private void getYourLunch(){
+        ReservationHelper.getReservation(getCurrentUser().getUid())
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> documentSnapshotTask) {
+                        if (documentSnapshotTask.isSuccessful()) {
+                            DocumentSnapshot document = documentSnapshotTask.getResult();
+                            if (document.exists()) {
+                                String myRestaurant = document.getString("mSelectedRestaurant");
+                                String dateDatabase = document.getString("mCreatedDate");
+                                if (myRestaurant != null && mDayDate.equals(dateDatabase)){
+                                    Intent intentYourLunch = new Intent(MainActivity.this, InfoPageRestaurantActivity.class);
+                                    intentYourLunch.putExtra("placeId", myRestaurant);
+                                    startActivity(intentYourLunch);
+                                }else{
+                                    displayAlertDialog();
+                                }
+                            } else {
+                                Log.d("TAG", "No such document");
+                            }
+                        } else {
+                            Log.d("TAG", "get failed with ", documentSnapshotTask.getException());
+                        }
+                    }
+                });
+    }
+
+    private void displayAlertDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(MainActivity.this, R.style.AlertDialogCustom));
+        builder.setTitle(getResources().getString(R.string.YOUR_LUNCH))
+                .setMessage(getResources().getString(R.string.YOU_HAVE_NOT_CHOSEN_A_RESTAURANT_FOR_LUNCH_YET))
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { }
+                })
+                .create()
+                .show();
     }
 
     private void updateWithUserInformation(TextView headerUserName, TextView headerMailUser, ImageView mImageProfile) {
