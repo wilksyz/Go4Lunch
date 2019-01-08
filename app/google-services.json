@@ -23,13 +23,29 @@
           }
         },
         {
+          "client_id": "822794858462-k373gpq66bpcj2n79sbtee2htg4ao6ot.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.antoine.go4lunch",
+            "certificate_hash": "b534d0b6e01b511119099d79f484fec072bc1987"
+          }
+        },
+        {
+          "client_id": "822794858462-al0h7sd7b31a0eoo70j4dn1mod4vi2l4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.antoine.go4lunch",
+            "certificate_hash": "7be42347867f2223a314babe857edae7f9b1cf80"
+          }
+        },
+        {
           "client_id": "822794858462-reahjjkovabpnamphf7n79t47rfaojfq.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDrUT0-8GZJnMky1S5MKYNemcn_ZMdVFm8"
+          "current_key": "AIzaSyBWOFYRy8ppyE-WqL6xLD7_1Low02HlvtU"
         }
       ],
       "services": {
